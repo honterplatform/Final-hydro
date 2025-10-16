@@ -21,9 +21,21 @@ const RepPopup = ({ visible, x, y, reps, stateName, selectedCode, onClose, onRep
       }
     };
 
+    const handleResize = () => {
+      // Force re-render on window resize to recalculate positioning
+      if (visible) {
+        setIsVisible(false);
+        setTimeout(() => setIsVisible(true), 10);
+      }
+    };
+
     if (visible) {
       document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
+      window.addEventListener('resize', handleResize);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+        window.removeEventListener('resize', handleResize);
+      };
     }
   }, [visible, onClose]);
 
@@ -32,22 +44,63 @@ const RepPopup = ({ visible, x, y, reps, stateName, selectedCode, onClose, onRep
   // Check if we're on mobile
   const isMobile = window.innerWidth <= 768;
   
-  // Adjust popup positioning for mobile
-  const mobileStyle = isMobile ? {
-    left: '50%',
-    top: '50%',
-    transform: 'translate(-50%, -50%)',
-    maxWidth: '90vw',
-    minWidth: '280px',
-    maxHeight: '80vh',
-    overflowY: 'auto',
-  } : {
-    left: x,
-    top: y,
-    transform: 'translate(-50%, -100%)',
-    maxWidth: '400px',
-    minWidth: '360px',
+  // Smart positioning logic for desktop/tablet
+  const getSmartPosition = () => {
+    if (isMobile) {
+      return {
+        left: '50%',
+        top: '50%',
+        transform: 'translate(-50%, -50%)',
+        maxWidth: '90vw',
+        minWidth: '280px',
+        maxHeight: '80vh',
+        overflowY: 'auto',
+      };
+    }
+
+    const popupWidth = 400; // maxWidth
+    const popupHeight = 300; // estimated max height
+    const margin = 20; // margin from edges
+    
+    let adjustedX = x;
+    let adjustedY = y;
+    let transformX = '-50%';
+    let transformY = '-100%';
+    
+    // Check if popup would go off the right edge
+    if (x + (popupWidth / 2) > window.innerWidth - margin) {
+      adjustedX = window.innerWidth - margin - (popupWidth / 2);
+    }
+    
+    // Check if popup would go off the left edge
+    if (x - (popupWidth / 2) < margin) {
+      adjustedX = margin + (popupWidth / 2);
+    }
+    
+    // Check if popup would go off the top edge
+    if (y - popupHeight < margin) {
+      // Position below the click point instead of above
+      adjustedY = y + 20; // small offset below the click
+      transformY = '0%';
+    }
+    
+    // Check if popup would go off the bottom edge when positioned below
+    if (y + popupHeight > window.innerHeight - margin) {
+      // Position above the click point
+      adjustedY = y - 10;
+      transformY = '-100%';
+    }
+
+    return {
+      left: adjustedX,
+      top: adjustedY,
+      transform: `translate(${transformX}, ${transformY})`,
+      maxWidth: '400px',
+      minWidth: '360px',
+    };
   };
+
+  const mobileStyle = getSmartPosition();
 
   return (
     <div
