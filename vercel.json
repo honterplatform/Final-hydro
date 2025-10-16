@@ -1,0 +1,12 @@
+{
+  "name": "find-your-rep-map",
+  "buildCommand": "echo 'Using pre-built dist folder'",
+  "outputDirectory": "dist",
+  "framework": "static",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
