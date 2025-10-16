@@ -28,22 +28,28 @@ export default async function handler(req, res) {
 
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Create the representatives table
-    const { error: createError } = await supabase.rpc('exec_sql', {
-      sql: `
-        CREATE TABLE IF NOT EXISTS representatives (
-          id SERIAL PRIMARY KEY,
-          rep VARCHAR(255) NOT NULL,
-          states JSONB NOT NULL,
-          cta_url VARCHAR(500) DEFAULT '#',
-          profile_image TEXT,
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-      `
-    });
+    // Try to create the representatives table
+    // Note: In Supabase, you typically create tables through the dashboard
+    // This is just a fallback attempt
+    try {
+      const { error: createError } = await supabase.rpc('exec_sql', {
+        sql: `
+          CREATE TABLE IF NOT EXISTS representatives (
+            id SERIAL PRIMARY KEY,
+            rep VARCHAR(255) NOT NULL,
+            states JSONB NOT NULL,
+            cta_url VARCHAR(500) DEFAULT '#',
+            profile_image TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+          )
+        `
+      });
 
-    if (createError) {
-      console.error('Table creation error:', createError);
+      if (createError) {
+        console.log('Table creation via RPC failed (this is normal):', createError.message);
+      }
+    } catch (error) {
+      console.log('Table creation not available via RPC (this is normal):', error.message);
     }
 
     // Check if table is empty and insert original data if needed

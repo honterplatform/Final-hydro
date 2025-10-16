@@ -1,11 +1,9 @@
-import { sql } from '@vercel/postgres';
+import { createClient } from '@supabase/supabase-js';
 
 export default async function handler(req, res) {
-  const { id } = req.query;
-
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') {
@@ -14,7 +12,35 @@ export default async function handler(req, res) {
   }
 
   try {
-    if (req.method === 'PUT') {
+    // Initialize Supabase client
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    
+    if (!supabaseUrl || !supabaseKey) {
+      throw new Error('Missing Supabase environment variables');
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseKey);
+    const { id } = req.query;
+
+    if (req.method === 'GET') {
+      // Get a specific representative
+      const { data, error } = await supabase
+        .from('representatives')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (error) {
+        throw new Error(`Database error: ${error.message}`);
+      }
+
+      if (!data) {
+        return res.status(404).json({ error: 'Representative not found' });
+      }
+
+      res.status(200).json(data);
+    } else if (req.method === 'PUT') {
       // Update representative
       const { rep, states, ctaUrl, profileImage } = req.body;
       
@@ -22,37 +48,51 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'Representative name and states are required' });
       }
 
-      const result = await sql`
-        UPDATE representatives 
-        SET rep = ${rep}, states = ${JSON.stringify(states)}, cta_url = ${ctaUrl || '#'}, profile_image = ${profileImage || null}
-        WHERE id = ${id}
-        RETURNING *
-      `;
-      
-      if (result.rows.length === 0) {
+      const { data, error } = await supabase
+        .from('representatives')
+        .update({
+          rep,
+          states,
+          cta_url: ctaUrl || '#',
+          profile_image: profileImage || null
+        })
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) {
+        throw new Error(`Database error: ${error.message}`);
+      }
+
+      if (!data) {
         return res.status(404).json({ error: 'Representative not found' });
       }
-      
-      res.status(200).json(result.rows[0]);
+
+      res.status(200).json(data);
     } else if (req.method === 'DELETE') {
       // Delete representative
-      const result = await sql`
-        DELETE FROM representatives 
-        WHERE id = ${id}
-        RETURNING *
-      `;
-      
-      if (result.rows.length === 0) {
+      const { data, error } = await supabase
+        .from('representatives')
+        .delete()
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) {
+        throw new Error(`Database error: ${error.message}`);
+      }
+
+      if (!data) {
         return res.status(404).json({ error: 'Representative not found' });
       }
-      
-      res.status(200).json(result.rows[0]);
+
+      res.status(200).json(data);
     } else {
-      res.setHeader('Allow', ['PUT', 'DELETE']);
+      res.setHeader('Allow', ['GET', 'PUT', 'DELETE']);
       res.status(405).end(`Method ${req.method} Not Allowed`);
     }
   } catch (error) {
     console.error('Database error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: 'Internal server error', details: error.message });
   }
 }
