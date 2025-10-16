@@ -123,7 +123,12 @@ const AdminPanel = ({ onClose }) => {
 
   const handleEdit = (index) => {
     const rep = reps[index];
-    setFormData(rep);
+    setFormData({
+      rep: rep.rep,
+      states: rep.states,
+      ctaUrl: rep.cta_url || rep.ctaUrl || '',
+      profileImage: rep.profile_image || rep.profileImage || ''
+    });
     setEditingRep(index);
   };
 
@@ -582,7 +587,7 @@ const AdminPanel = ({ onClose }) => {
                   fontSize: '11px',
                   color: '#9ca3af',
                 }}>
-                  URL: {rep.ctaUrl || 'Not set'}
+                  URL: {rep.cta_url || rep.ctaUrl || 'Not set'}
                 </p>
                 </div>
               </div>
