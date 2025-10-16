@@ -38,8 +38,8 @@ const MobileStateList = ({ onStateSelect, onRepHover, onRepLeave }) => {
           mapping[stateCode].push({
             rep: repData.rep,
             states: repData.states,
-            ctaUrl: repData.ctaUrl,
-            profileImage: repData.profileImage
+            ctaUrl: repData.cta_url,
+            profileImage: repData.profile_image
           });
         }
       });
