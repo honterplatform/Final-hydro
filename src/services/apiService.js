@@ -15,7 +15,14 @@ export const getReps = async () => {
 export const createRep = async (repData) => {
   // Use localStorage for now
   const localData = localStorage.getItem('representatives');
-  const reps = localData ? JSON.parse(localData) : [];
+  let reps = localData ? JSON.parse(localData) : [];
+  
+  // If no localStorage data, get original data first
+  if (reps.length === 0) {
+    const { reps: originalReps } = await import('../data/reps.js');
+    reps = [...originalReps];
+  }
+  
   const newRep = { ...repData, id: Date.now() };
   reps.push(newRep);
   localStorage.setItem('representatives', JSON.stringify(reps));
@@ -26,7 +33,14 @@ export const createRep = async (repData) => {
 export const updateRep = async (id, repData) => {
   // Use localStorage for now
   const localData = localStorage.getItem('representatives');
-  const reps = localData ? JSON.parse(localData) : [];
+  let reps = localData ? JSON.parse(localData) : [];
+  
+  // If no localStorage data, get original data first
+  if (reps.length === 0) {
+    const { reps: originalReps } = await import('../data/reps.js');
+    reps = [...originalReps];
+  }
+  
   const index = reps.findIndex(rep => rep.id === id);
   if (index !== -1) {
     reps[index] = { ...reps[index], ...repData };
@@ -40,7 +54,14 @@ export const updateRep = async (id, repData) => {
 export const deleteRep = async (id) => {
   // Use localStorage for now
   const localData = localStorage.getItem('representatives');
-  const reps = localData ? JSON.parse(localData) : [];
+  let reps = localData ? JSON.parse(localData) : [];
+  
+  // If no localStorage data, get original data first
+  if (reps.length === 0) {
+    const { reps: originalReps } = await import('../data/reps.js');
+    reps = [...originalReps];
+  }
+  
   const index = reps.findIndex(rep => rep.id === id);
   if (index !== -1) {
     const deletedRep = reps[index];
@@ -54,6 +75,13 @@ export const deleteRep = async (id) => {
 // Reset to default data
 export const resetReps = async () => {
   // Use localStorage for now
+  const { reps } = await import('../data/reps.js');
+  localStorage.setItem('representatives', JSON.stringify(reps));
+  return reps;
+};
+
+// Restore original data (useful for debugging)
+export const restoreOriginalData = async () => {
   const { reps } = await import('../data/reps.js');
   localStorage.setItem('representatives', JSON.stringify(reps));
   return reps;

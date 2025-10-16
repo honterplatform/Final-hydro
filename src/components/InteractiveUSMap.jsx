@@ -48,28 +48,46 @@ const InteractiveUSMap = () => {
     };
   }, []);
 
+  // State for storing reps data
+  const [repsData, setRepsData] = useState([]);
+
+  // Load reps data
+  useEffect(() => {
+    const loadReps = async () => {
+      try {
+        const reps = await getReps();
+        setRepsData(reps);
+      } catch (error) {
+        console.error('Error loading reps:', error);
+        setRepsData([]);
+      }
+    };
+    loadReps();
+  }, [refreshKey]);
+
   // Build repsByState mapping
   const repsByState = useMemo(() => {
-    const reps = getReps();
     const mapping = {};
-    reps.forEach(repData => {
-      repData.states.forEach(stateCode => {
-        if (!mapping[stateCode]) {
-          mapping[stateCode] = [];
-        }
-        // Avoid duplicates
-        if (!mapping[stateCode].find(r => r.rep === repData.rep)) {
-          mapping[stateCode].push({
-            rep: repData.rep,
-            states: repData.states,
-            ctaUrl: repData.ctaUrl,
-            profileImage: repData.profileImage
-          });
-        }
-      });
+    repsData.forEach(repData => {
+      if (repData.states && Array.isArray(repData.states)) {
+        repData.states.forEach(stateCode => {
+          if (!mapping[stateCode]) {
+            mapping[stateCode] = [];
+          }
+          // Avoid duplicates
+          if (!mapping[stateCode].find(r => r.rep === repData.rep)) {
+            mapping[stateCode].push({
+              rep: repData.rep,
+              states: repData.states,
+              ctaUrl: repData.ctaUrl,
+              profileImage: repData.profileImage
+            });
+          }
+        });
+      }
     });
     return mapping;
-  }, [refreshKey]);
+  }, [repsData]);
 
   const handleStateClick = (stateCode, event) => {
     setSelectedCode(stateCode);
