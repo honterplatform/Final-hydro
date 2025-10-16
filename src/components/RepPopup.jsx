@@ -116,7 +116,7 @@ const RepPopup = ({ visible, x, y, reps, stateName, selectedCode, onClose, onRep
         fontFamily: brandTokens.font,
         color: brandTokens.colors.text,
         opacity: visible ? 1 : 0,
-        transition: 'opacity 200ms ease',
+        transition: 'opacity 200ms ease, transform 200ms ease',
         ...mobileStyle,
       }}
     >
