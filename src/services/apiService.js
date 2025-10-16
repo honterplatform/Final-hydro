@@ -62,12 +62,12 @@ export const createRep = async (repData) => {
 // Update representative
 export const updateRep = async (id, repData) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/reps/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/update-rep`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(repData),
+      body: JSON.stringify({ id, ...repData }),
     });
     
     if (!response.ok) {
@@ -100,8 +100,12 @@ export const updateRep = async (id, repData) => {
 // Delete representative
 export const deleteRep = async (id) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/reps/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/delete-rep`, {
       method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id }),
     });
     
     if (!response.ok) {
