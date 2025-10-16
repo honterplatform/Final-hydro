@@ -1,4 +1,4 @@
-import { sql } from '@vercel/postgres';
+import { createClient } from '@supabase/supabase-js';
 
 export default async function handler(req, res) {
   // Enable CORS
@@ -18,47 +18,71 @@ export default async function handler(req, res) {
   }
 
   try {
+    // Initialize Supabase client
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    
+    if (!supabaseUrl || !supabaseKey) {
+      throw new Error('Missing Supabase environment variables');
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
     // Create the representatives table
-    await sql`
-      CREATE TABLE IF NOT EXISTS representatives (
-        id SERIAL PRIMARY KEY,
-        rep VARCHAR(255) NOT NULL,
-        states JSONB NOT NULL,
-        cta_url VARCHAR(500) DEFAULT '#',
-        profile_image TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      )
-    `;
+    const { error: createError } = await supabase.rpc('exec_sql', {
+      sql: `
+        CREATE TABLE IF NOT EXISTS representatives (
+          id SERIAL PRIMARY KEY,
+          rep VARCHAR(255) NOT NULL,
+          states JSONB NOT NULL,
+          cta_url VARCHAR(500) DEFAULT '#',
+          profile_image TEXT,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+      `
+    });
+
+    if (createError) {
+      console.error('Table creation error:', createError);
+    }
 
     // Check if table is empty and insert original data if needed
-    const countResult = await sql`SELECT COUNT(*) FROM representatives`;
-    const count = parseInt(countResult.rows[0].count);
+    const { data: countData, error: countError } = await supabase
+      .from('representatives')
+      .select('*', { count: 'exact', head: true });
+
+    if (countError) {
+      throw new Error(`Count error: ${countError.message}`);
+    }
+
+    const count = countData?.length || 0;
 
     if (count === 0) {
       const originalReps = [
-        { rep: "Randy Blackmon", states: ["AL", "GA", "MS", "FL", "NC", "SC"], ctaUrl: "#" },
-        { rep: "Jeremy Ross", states: ["LA"], ctaUrl: "#" },
-        { rep: "Joseph Gebbia", states: ["MN", "WI", "IL", "IN", "IA"], ctaUrl: "#" },
-        { rep: "Ken Smith", states: ["PA", "NJ", "MD", "DE"], ctaUrl: "#" },
-        { rep: "Kyle Krumlauf", states: ["OH", "PA", "VA", "KY", "TN", "IN"], ctaUrl: "#" },
-        { rep: "Luke Rice", states: ["CT", "NY", "NH", "RI", "ME", "MA", "VT"], ctaUrl: "#" },
-        { rep: "Steve Smith & Steve Antonini", states: ["NY", "NJ"], ctaUrl: "#" },
-        { rep: "Dan Livesay", states: ["NE", "KS", "OK", "MO", "AR"], ctaUrl: "#" },
-        { rep: "Pat Tuel", states: ["CA", "NV"], ctaUrl: "#" },
-        { rep: "Rick Coury", states: ["CA", "NV"], ctaUrl: "#" },
-        { rep: "Phil Kristianson", states: ["HI"], ctaUrl: "#" },
-        { rep: "Kurt Hodson", states: ["MT", "ID"], ctaUrl: "#" },
-        { rep: "Steve Schapp", states: ["UT", "CO"], ctaUrl: "#" },
-        { rep: "Paul Mosher", states: ["AZ", "NM"], ctaUrl: "#" },
-        { rep: "Will McHarness", states: ["OR", "WA"], ctaUrl: "#" },
-        { rep: "Alex Anako, Paul Mosher, Aaron Schultz", states: ["WA", "ID"], ctaUrl: "#" }
+        { rep: "Randy Blackmon", states: ["AL", "GA", "MS", "FL", "NC", "SC"], cta_url: "#" },
+        { rep: "Jeremy Ross", states: ["LA"], cta_url: "#" },
+        { rep: "Joseph Gebbia", states: ["MN", "WI", "IL", "IN", "IA"], cta_url: "#" },
+        { rep: "Ken Smith", states: ["PA", "NJ", "MD", "DE"], cta_url: "#" },
+        { rep: "Kyle Krumlauf", states: ["OH", "PA", "VA", "KY", "TN", "IN"], cta_url: "#" },
+        { rep: "Luke Rice", states: ["CT", "NY", "NH", "RI", "ME", "MA", "VT"], cta_url: "#" },
+        { rep: "Steve Smith & Steve Antonini", states: ["NY", "NJ"], cta_url: "#" },
+        { rep: "Dan Livesay", states: ["NE", "KS", "OK", "MO", "AR"], cta_url: "#" },
+        { rep: "Pat Tuel", states: ["CA", "NV"], cta_url: "#" },
+        { rep: "Rick Coury", states: ["CA", "NV"], cta_url: "#" },
+        { rep: "Phil Kristianson", states: ["HI"], cta_url: "#" },
+        { rep: "Kurt Hodson", states: ["MT", "ID"], cta_url: "#" },
+        { rep: "Steve Schapp", states: ["UT", "CO"], cta_url: "#" },
+        { rep: "Paul Mosher", states: ["AZ", "NM"], cta_url: "#" },
+        { rep: "Will McHarness", states: ["OR", "WA"], cta_url: "#" },
+        { rep: "Alex Anako, Paul Mosher, Aaron Schultz", states: ["WA", "ID"], cta_url: "#" }
       ];
 
-      for (const rep of originalReps) {
-        await sql`
-          INSERT INTO representatives (rep, states, cta_url, profile_image)
-          VALUES (${rep.rep}, ${JSON.stringify(rep.states)}, ${rep.ctaUrl}, null)
-        `;
+      const { error: insertError } = await supabase
+        .from('representatives')
+        .insert(originalReps);
+
+      if (insertError) {
+        throw new Error(`Insert error: ${insertError.message}`);
       }
     }
 

@@ -5,33 +5,58 @@ const API_BASE_URL = process.env.NODE_ENV === 'production'
 
 // Get all representatives
 export const getReps = async () => {
-  // For now, use localStorage with fallback to original data
-  // This ensures the app works while we fix the database connection
-  const localData = localStorage.getItem('representatives');
-  if (localData) {
-    return JSON.parse(localData);
+  try {
+    const response = await fetch(`${API_BASE_URL}/reps`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch representatives');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('API error, falling back to localStorage:', error);
+    // Fallback to localStorage
+    const localData = localStorage.getItem('representatives');
+    if (localData) {
+      return JSON.parse(localData);
+    }
+    // If no localStorage data, return original data
+    const { reps } = await import('../data/reps.js');
+    return reps;
   }
-  // If no localStorage data, return original data
-  const { reps } = await import('../data/reps.js');
-  return reps;
 };
 
 // Create new representative
 export const createRep = async (repData) => {
-  // Use localStorage for now while we fix the database connection
-  const localData = localStorage.getItem('representatives');
-  let reps = localData ? JSON.parse(localData) : [];
-  
-  // If no localStorage data, get original data first
-  if (reps.length === 0) {
-    const { reps: originalReps } = await import('../data/reps.js');
-    reps = [...originalReps];
+  try {
+    const response = await fetch(`${API_BASE_URL}/reps`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(repData),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to create representative');
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error('API error, falling back to localStorage:', error);
+    // Fallback to localStorage
+    const localData = localStorage.getItem('representatives');
+    let reps = localData ? JSON.parse(localData) : [];
+    
+    // If no localStorage data, get original data first
+    if (reps.length === 0) {
+      const { reps: originalReps } = await import('../data/reps.js');
+      reps = [...originalReps];
+    }
+    
+    const newRep = { ...repData, id: Date.now() };
+    reps.push(newRep);
+    localStorage.setItem('representatives', JSON.stringify(reps));
+    return newRep;
   }
-  
-  const newRep = { ...repData, id: Date.now() };
-  reps.push(newRep);
-  localStorage.setItem('representatives', JSON.stringify(reps));
-  return newRep;
 };
 
 // Update representative
