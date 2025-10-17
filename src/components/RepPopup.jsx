@@ -142,7 +142,7 @@ const RepPopup = ({ visible, x, y, reps, stateName, selectedCode, onClose, onRep
                    background: 'none',
                    border: 'none',
                    fontSize: '20px',
-                   fontWeight: '300',
+                   fontWeight: '200',
                    cursor: 'pointer',
                    color: '#6b7280',
                    padding: '0',

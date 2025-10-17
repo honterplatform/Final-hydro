@@ -154,7 +154,7 @@ const MobileStateList = ({ onStateSelect, onRepHover, onRepLeave }) => {
         </div>
 
         {/* Representatives */}
-        <div style={{ paddingBottom: '20px' }}>
+        <div style={{ paddingBottom: '80px' }}>
           {repsData
             .filter(repData => repData.states && repData.states.includes(selectedState))
             .flatMap((repData, repIndex) => {
@@ -174,6 +174,7 @@ const MobileStateList = ({ onStateSelect, onRepHover, onRepLeave }) => {
                     backgroundColor: '#f9fafb',
                     borderRadius: '8px',
                     padding: '16px',
+                    marginTop: '12px',
                     marginBottom: '12px',
                     border: `1px solid ${brandTokens.colors.border}`,
                     cursor: 'pointer',
@@ -289,15 +290,6 @@ const MobileStateList = ({ onStateSelect, onRepHover, onRepLeave }) => {
         paddingBottom: '12px',
         borderBottom: `1px solid ${brandTokens.colors.border}`,
       }}>
-        <h1 style={{
-          margin: '0 0 16px 0',
-          fontSize: '24px',
-          fontWeight: '400',
-          color: brandTokens.colors.text,
-        }}>
-          Find Your Rep
-        </h1>
-        
         {/* Search */}
         <input
           type="text"
@@ -313,6 +305,7 @@ const MobileStateList = ({ onStateSelect, onRepHover, onRepLeave }) => {
             fontFamily: brandTokens.font,
             outline: 'none',
             backgroundColor: 'white',
+            boxSizing: 'border-box',
           }}
           onFocus={(e) => e.target.style.borderColor = brandTokens.colors.selected}
           onBlur={(e) => e.target.style.borderColor = brandTokens.colors.border}
@@ -355,7 +348,13 @@ const MobileStateList = ({ onStateSelect, onRepHover, onRepLeave }) => {
                       fontSize: '12px',
                       color: '#6b7280',
                     }}>
-                      {stateReps[stateCode].length} rep{stateReps[stateCode].length !== 1 ? 's' : ''}
+                      {(() => {
+                        const totalReps = stateReps[stateCode].reduce((count, rep) => {
+                          const individualReps = rep.rep.split(/,\s*|\s+&\s+/).filter(name => name.trim().length > 0);
+                          return count + individualReps.length;
+                        }, 0);
+                        return `${totalReps} rep${totalReps !== 1 ? 's' : ''}`;
+                      })()}
                     </p>
                   </div>
                   <div style={{
