@@ -14,6 +14,8 @@
     "start": "npx serve dist -s"
   },
   "dependencies": {
+    "@googlemaps/js-api-loader": "^2.0.1",
+    "@googlemaps/react-wrapper": "^1.2.0",
     "@supabase/supabase-js": "^2.75.0",
     "@vercel/postgres": "^0.10.0",
     "react": "^18.2.0",

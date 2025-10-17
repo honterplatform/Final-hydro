@@ -533,9 +533,9 @@ const AdminPanel = ({ onClose }) => {
                 gap: '12px',
                 flex: 1 
               }}>
-                {rep.profileImage ? (
+                {(rep.profile_image || rep.profileImage) ? (
                   <img
-                    src={rep.profileImage}
+                    src={rep.profile_image || rep.profileImage}
                     alt={`${rep.rep} profile`}
                     style={{
                       width: '48px',

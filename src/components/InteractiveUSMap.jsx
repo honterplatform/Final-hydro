@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
 import { getReps } from '../services/repService';
 import { nameToCode, codeToName } from '../data/states';
@@ -65,6 +65,7 @@ const InteractiveUSMap = () => {
     loadReps();
   }, [refreshKey]);
 
+
   // Build repsByState mapping
   const repsByState = useMemo(() => {
     const mapping = {};
@@ -74,15 +75,13 @@ const InteractiveUSMap = () => {
           if (!mapping[stateCode]) {
             mapping[stateCode] = [];
           }
-          // Avoid duplicates
-          if (!mapping[stateCode].find(r => r.rep === repData.rep)) {
-            mapping[stateCode].push({
-              rep: repData.rep,
-              states: repData.states,
-              ctaUrl: repData.cta_url,
-              profileImage: repData.profile_image
-            });
-          }
+          // Add the representative to each state they cover (no duplicate check)
+          mapping[stateCode].push({
+            rep: repData.rep,
+            states: repData.states,
+            ctaUrl: repData.cta_url,
+            profileImage: repData.profile_image
+          });
         });
       }
     });
@@ -157,53 +156,71 @@ const InteractiveUSMap = () => {
 
   return (
     <div className={styles.mapContainer}>
-      <ComposableMap
-        projection="geoAlbersUsa"
-        projectionConfig={{
-          scale: 1000,
-          translate: [400, 200]
-        }}
-        className={styles.mapSvg}
-      >
-        <Geographies geography="https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json">
-          {({ geographies }) => 
-            geographies
-              .filter((geo) => nameToCode[geo.properties.name])
-              .map((geo) => {
-                const stateCode = nameToCode[geo.properties.name];
-                
-                return (
-                  <Geography
-                    key={geo.rsmKey}
-                    geography={geo}
-                    fill={getStateFill(stateCode)}
-                    stroke="white"
-                    strokeWidth={0.8}
-                    className={styles.statePath}
-                    onMouseEnter={() => setHoverCode(stateCode)}
-                    onMouseLeave={() => setHoverCode(null)}
-                    onMouseMove={(e) => {
-                      const rect = e.currentTarget.closest('svg').getBoundingClientRect();
-                      setMousePos({
-                        x: e.clientX - rect.left,
-                        y: e.clientY - rect.top
-                      });
-                    }}
-                    onClick={(e) => handleStateClick(stateCode, e)}
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        handleStateClick(stateCode, e);
-                      }
-                    }}
-                  />
-                );
-              })
-          }
-        </Geographies>
-      </ComposableMap>
+      {repsData.length === 0 ? (
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center', 
+          height: '100%',
+          fontSize: '18px',
+          color: '#666'
+        }}>
+          Loading map...
+        </div>
+      ) : (
+        <ComposableMap
+          projection="geoAlbersUsa"
+          projectionConfig={{
+            scale: 1200,
+            translate: [400, 250]
+          }}
+          className={styles.mapSvg}
+        >
+          <Geographies geography="https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json">
+            {({ geographies }) => 
+              geographies
+                .filter((geo) => nameToCode[geo.properties.name])
+                .map((geo) => {
+                  const stateCode = nameToCode[geo.properties.name];
+                  
+                  const reps = repsByState[stateCode];
+                  
+                  return (
+                    <React.Fragment key={geo.rsmKey}>
+                      <Geography
+                        geography={geo}
+                        fill={getStateFill(stateCode)}
+                        stroke="white"
+                        strokeWidth={0.8}
+                        className={styles.statePath}
+                        onMouseEnter={() => setHoverCode(stateCode)}
+                        onMouseLeave={() => setHoverCode(null)}
+                        onMouseMove={(e) => {
+                          const rect = e.currentTarget.closest('svg').getBoundingClientRect();
+                          setMousePos({
+                            x: e.clientX - rect.left,
+                            y: e.clientY - rect.top
+                          });
+                        }}
+                        onClick={(e) => handleStateClick(stateCode, e)}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            handleStateClick(stateCode, e);
+                          }
+                        }}
+                      />
+                    </React.Fragment>
+                  );
+                })
+            }
+          </Geographies>
+        </ComposableMap>
+      )}
+
+
       
       <Tooltip
         visible={hoverCode !== null}

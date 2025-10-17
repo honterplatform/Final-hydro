@@ -1,7 +1,7 @@
 // API service - using Vercel Postgres database
 const API_BASE_URL = process.env.NODE_ENV === 'production' 
   ? 'https://hydro-map-xi.vercel.app/api' 
-  : 'http://localhost:3000/api';
+  : 'https://hydro-map-xi.vercel.app/api'; // Use production API for development too
 
 // Get all representatives
 export const getReps = async () => {
