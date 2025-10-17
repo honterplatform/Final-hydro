@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
-import { getReps, subscribeToUpdates } from '../services/hybridStorageService';
+import { getReps } from '../services/repService';
 import { nameToCode, codeToName } from '../data/states';
 import brandTokens from '../brandTokens';
 import Tooltip from './Tooltip';
@@ -31,10 +31,27 @@ const InteractiveUSMap = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // Listen for localStorage changes to refresh data
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setRefreshKey(prev => prev + 1);
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Also listen for custom events from admin panel
+    window.addEventListener('repsUpdated', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('repsUpdated', handleStorageChange);
+    };
+  }, []);
+
   // State for storing reps data
   const [repsData, setRepsData] = useState([]);
 
-  // Load reps data and subscribe to real-time updates
+  // Load reps data
   useEffect(() => {
     const loadReps = async () => {
       try {
@@ -45,19 +62,8 @@ const InteractiveUSMap = () => {
         setRepsData([]);
       }
     };
-    
     loadReps();
-    
-    // Subscribe to real-time updates
-    const unsubscribe = subscribeToUpdates((updatedReps) => {
-      console.log('Real-time update received in map:', updatedReps);
-      setRepsData(updatedReps);
-    });
-    
-    return () => {
-      unsubscribe();
-    };
-  }, []);
+  }, [refreshKey]);
 
 
   // Build repsByState mapping
@@ -74,7 +80,7 @@ const InteractiveUSMap = () => {
             rep: repData.rep,
             states: repData.states,
             ctaUrl: repData.cta_url,
-            profileImage: repData.profile_image
+            profileImage: repData.profileImage || repData.profile_image
           });
         });
       }
@@ -166,7 +172,7 @@ const InteractiveUSMap = () => {
           projection="geoAlbersUsa"
           projectionConfig={{
             scale: 1200,
-            translate: [400, 250]
+            translate: [0, 0]
           }}
           className={styles.mapSvg}
         >

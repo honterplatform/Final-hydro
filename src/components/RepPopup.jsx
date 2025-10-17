@@ -184,8 +184,6 @@ const RepPopup = ({ visible, x, y, reps, stateName, selectedCode, onClose, onRep
                        }}
                        onMouseEnter={() => onRepHover && onRepHover(allStates)}
                        onMouseLeave={() => onRepLeave && onRepLeave()}
-                       onMouseOver={(e) => e.target.style.backgroundColor = '#f9fafb'}
-                       onMouseOut={(e) => e.target.style.backgroundColor = 'transparent'}
                      >
                 <div style={{
                   display: 'flex',
@@ -263,11 +261,8 @@ const RepPopup = ({ visible, x, y, reps, stateName, selectedCode, onClose, onRep
                              cursor: 'pointer',
                              textDecoration: 'none',
                              display: 'inline-block',
-                             transition: 'background-color 160ms ease',
                              marginLeft: isMobile ? '8px' : '12px',
                            }}
-                    onMouseEnter={(e) => e.target.style.backgroundColor = '#15803d'}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = brandTokens.colors.selected}
                   >
                     Let's Talk
                   </a>

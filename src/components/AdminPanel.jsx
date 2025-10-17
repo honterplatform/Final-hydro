@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import brandTokens from '../brandTokens';
 import { codeToName } from '../data/states';
-import { getReps, createRep, updateRep, deleteRep, subscribeToUpdates, getSyncStatus } from '../services/hybridStorageService';
+import { getReps, createRep, updateRep, deleteRep, resetReps } from '../services/repService';
 
 const AdminPanel = ({ onClose }) => {
   const [reps, setReps] = useState(null);
   const [editingRep, setEditingRep] = useState(null);
-  const [syncStatus, setSyncStatus] = useState(null);
   const [formData, setFormData] = useState({
     rep: '',
     states: [],
@@ -14,7 +13,7 @@ const AdminPanel = ({ onClose }) => {
     profileImage: ''
   });
 
-  // Load reps and subscribe to real-time updates
+  // Load reps from API on component mount
   useEffect(() => {
     const loadReps = async () => {
       try {
@@ -28,31 +27,15 @@ const AdminPanel = ({ onClose }) => {
         });
       }
     };
-    
     loadReps();
-    
-    // Subscribe to real-time updates
-    const unsubscribe = subscribeToUpdates((updatedReps) => {
-      console.log('Real-time update received in admin:', updatedReps);
-      setReps(updatedReps);
-    });
-    
-    return () => {
-      unsubscribe();
-    };
   }, []);
 
-  // Update sync status periodically
+  // Dispatch custom event when reps change
   useEffect(() => {
-    const updateSyncStatus = () => {
-      setSyncStatus(getSyncStatus());
-    };
-    
-    updateSyncStatus();
-    const interval = setInterval(updateSyncStatus, 5000);
-    
-    return () => clearInterval(interval);
-  }, []);
+    if (reps !== null) {
+      window.dispatchEvent(new CustomEvent('repsUpdated'));
+    }
+  }, [reps]);
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
@@ -224,9 +207,6 @@ const AdminPanel = ({ onClose }) => {
         marginBottom: '20px',
         paddingBottom: '12px',
         borderBottom: `1px solid ${brandTokens.colors.border}`,
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
       }}>
         <h2 style={{
           margin: 0,
@@ -236,39 +216,6 @@ const AdminPanel = ({ onClose }) => {
         }}>
           Manage Representatives
         </h2>
-        
-        {/* Sync Status Indicator */}
-        {syncStatus && (
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            fontSize: '12px',
-            color: brandTokens.colors.textSecondary,
-          }}>
-            <div style={{
-              width: '8px',
-              height: '8px',
-              borderRadius: '50%',
-              backgroundColor: syncStatus.isOnline 
-                ? (syncStatus.hasOfflineChanges ? '#ffa500' : '#4caf50')
-                : '#f44336',
-            }} />
-            <span>
-              {syncStatus.isOnline 
-                ? (syncStatus.hasOfflineChanges 
-                    ? `${syncStatus.offlineChangesCount} pending sync`
-                    : 'Synced')
-                : 'Offline'
-              }
-            </span>
-            {syncStatus.lastSync && (
-              <span style={{ fontSize: '10px', opacity: 0.7 }}>
-                {new Date(syncStatus.lastSync).toLocaleTimeString()}
-              </span>
-            )}
-          </div>
-        )}
       </div>
 
       {/* Form */}

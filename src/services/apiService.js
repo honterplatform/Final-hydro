@@ -1,7 +1,7 @@
-// API service - using Supabase database with localStorage fallback
+// API service - using Vercel Postgres database
 const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://final-hydro.vercel.app/api' 
-  : 'https://final-hydro.vercel.app/api'; // Use production API for development too
+  ? 'https://hydro-map-xi.vercel.app/api' 
+  : 'http://localhost:3002/api'; // Use local API for development
 
 // Get all representatives
 export const getReps = async () => {

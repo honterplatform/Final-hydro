@@ -54,7 +54,7 @@ const MobileStateList = ({ onStateSelect, onRepHover, onRepLeave }) => {
               rep: repData.rep,
               states: repData.states,
               ctaUrl: repData.cta_url,
-              profileImage: repData.profile_image
+              profileImage: repData.profileImage || repData.profile_image
             });
           }
         });
@@ -196,9 +196,9 @@ const MobileStateList = ({ onStateSelect, onRepHover, onRepLeave }) => {
                       gap: '12px',
                       flex: 1,
                     }}>
-                      {repData.profileImage ? (
+                      {(repData.profileImage || repData.profile_image) ? (
                         <img
-                          src={repData.profileImage}
+                          src={repData.profileImage || repData.profile_image}
                           alt={`${individualName} profile`}
                           style={{
                             width: '48px',
@@ -259,11 +259,8 @@ const MobileStateList = ({ onStateSelect, onRepHover, onRepLeave }) => {
                         fontSize: '14px',
                         fontWeight: '400',
                         cursor: 'pointer',
-                        transition: 'background-color 160ms ease',
                         marginLeft: '12px',
                       }}
-                      onMouseEnter={(e) => e.target.style.backgroundColor = '#15803d'}
-                      onMouseLeave={(e) => e.target.style.backgroundColor = brandTokens.colors.selected}
                     >
                       Let's Talk
                     </button>
