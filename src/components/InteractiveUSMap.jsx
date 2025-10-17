@@ -144,7 +144,7 @@ const InteractiveUSMap = () => {
   // Render mobile list view on small screens
   if (isMobile) {
     return (
-      <div className={styles.mapContainer}>
+      <div className={styles.mobileListContainer}>
         <MobileStateList 
           onStateSelect={handleMobileStateSelect}
           onRepHover={handleRepCardHover}

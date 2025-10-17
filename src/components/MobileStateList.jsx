@@ -8,7 +8,22 @@ const MobileStateList = ({ onStateSelect, onRepHover, onRepLeave }) => {
   const [selectedState, setSelectedState] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [repsData, setRepsData] = useState([]);
   const ITEMS_PER_PAGE = 10;
+
+  // Load reps data
+  useEffect(() => {
+    const loadReps = async () => {
+      try {
+        const reps = await getReps();
+        setRepsData(reps);
+      } catch (error) {
+        console.error('Error loading reps:', error);
+        setRepsData([]);
+      }
+    };
+    loadReps();
+  }, [refreshKey]);
 
   // Listen for localStorage changes to refresh data
   useEffect(() => {
@@ -27,25 +42,26 @@ const MobileStateList = ({ onStateSelect, onRepHover, onRepLeave }) => {
 
   // Create a mapping of states to their representatives
   const stateReps = useMemo(() => {
-    const reps = getReps();
     const mapping = {};
-    reps.forEach(repData => {
-      repData.states.forEach(stateCode => {
-        if (!mapping[stateCode]) {
-          mapping[stateCode] = [];
-        }
-        if (!mapping[stateCode].find(r => r.rep === repData.rep)) {
-          mapping[stateCode].push({
-            rep: repData.rep,
-            states: repData.states,
-            ctaUrl: repData.cta_url,
-            profileImage: repData.profile_image
-          });
-        }
-      });
+    repsData.forEach(repData => {
+      if (repData.states && Array.isArray(repData.states)) {
+        repData.states.forEach(stateCode => {
+          if (!mapping[stateCode]) {
+            mapping[stateCode] = [];
+          }
+          if (!mapping[stateCode].find(r => r.rep === repData.rep)) {
+            mapping[stateCode].push({
+              rep: repData.rep,
+              states: repData.states,
+              ctaUrl: repData.cta_url,
+              profileImage: repData.profile_image
+            });
+          }
+        });
+      }
     });
     return mapping;
-  }, [refreshKey]);
+  }, [repsData]);
 
   // Get all states that have representatives
   const statesWithReps = useMemo(() => {
@@ -139,15 +155,17 @@ const MobileStateList = ({ onStateSelect, onRepHover, onRepLeave }) => {
 
         {/* Representatives */}
         <div style={{ paddingBottom: '20px' }}>
-          {getReps().flatMap((repData, repIndex) => {
-            const individualReps = repData.rep
-              .split(/,\s*|\s+&\s+/)
-              .map(name => name.trim())
-              .filter(name => name.length > 0);
-            
-            return individualReps.map((individualName, nameIndex) => {
-              const allStates = repData.states || [];
-              const otherStates = allStates.filter(stateCode => stateCode !== selectedState);
+          {repsData
+            .filter(repData => repData.states && repData.states.includes(selectedState))
+            .flatMap((repData, repIndex) => {
+              const individualReps = repData.rep
+                .split(/,\s*|\s+&\s+/)
+                .map(name => name.trim())
+                .filter(name => name.length > 0);
+              
+              return individualReps.map((individualName, nameIndex) => {
+                const allStates = repData.states || [];
+                const otherStates = allStates.filter(stateCode => stateCode !== selectedState);
               
               return (
                 <div 
