@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
-import { getReps } from '../services/repService';
+import { getReps, subscribeToUpdates } from '../services/hybridStorageService';
 import { nameToCode, codeToName } from '../data/states';
 import brandTokens from '../brandTokens';
 import Tooltip from './Tooltip';
@@ -31,27 +31,10 @@ const InteractiveUSMap = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Listen for localStorage changes to refresh data
-  useEffect(() => {
-    const handleStorageChange = () => {
-      setRefreshKey(prev => prev + 1);
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    
-    // Also listen for custom events from admin panel
-    window.addEventListener('repsUpdated', handleStorageChange);
-    
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('repsUpdated', handleStorageChange);
-    };
-  }, []);
-
   // State for storing reps data
   const [repsData, setRepsData] = useState([]);
 
-  // Load reps data
+  // Load reps data and subscribe to real-time updates
   useEffect(() => {
     const loadReps = async () => {
       try {
@@ -62,8 +45,19 @@ const InteractiveUSMap = () => {
         setRepsData([]);
       }
     };
+    
     loadReps();
-  }, [refreshKey]);
+    
+    // Subscribe to real-time updates
+    const unsubscribe = subscribeToUpdates((updatedReps) => {
+      console.log('Real-time update received in map:', updatedReps);
+      setRepsData(updatedReps);
+    });
+    
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
 
   // Build repsByState mapping
