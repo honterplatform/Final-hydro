@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
-import { getReps } from '../services/repService';
+import { getReps, subscribeToRepsUpdates } from '../services/apiService';
 import { nameToCode, codeToName } from '../data/states';
 import brandTokens from '../brandTokens';
 import Tooltip from './Tooltip';
@@ -51,7 +51,7 @@ const InteractiveUSMap = () => {
   // State for storing reps data
   const [repsData, setRepsData] = useState([]);
 
-  // Load reps data
+  // Load reps data and set up real-time subscriptions
   useEffect(() => {
     const loadReps = async () => {
       try {
@@ -62,7 +62,33 @@ const InteractiveUSMap = () => {
         setRepsData([]);
       }
     };
+    
     loadReps();
+
+    // Set up real-time subscription for live updates (with polling fallback)
+    let subscription = null;
+    
+    const setupSubscription = async () => {
+      try {
+        subscription = await subscribeToRepsUpdates((payload) => {
+          console.log('Update received:', payload);
+          
+          // Refresh data when any change occurs
+          loadReps();
+        });
+      } catch (error) {
+        console.error('Failed to set up subscription:', error);
+      }
+    };
+    
+    setupSubscription();
+
+    // Cleanup subscription on unmount
+    return () => {
+      if (subscription && typeof subscription.unsubscribe === 'function') {
+        subscription.unsubscribe();
+      }
+    };
   }, [refreshKey]);
 
 
@@ -77,9 +103,9 @@ const InteractiveUSMap = () => {
           }
           // Add the representative to each state they cover (no duplicate check)
           mapping[stateCode].push({
-            rep: repData.rep,
+            rep: repData.rep || repData.rep_name || repData.representative || '',
             states: repData.states,
-            ctaUrl: repData.cta_url,
+            ctaUrl: repData.cta_url || repData.ctaUrl || '#',
             profileImage: repData.profileImage || repData.profile_image
           });
         });

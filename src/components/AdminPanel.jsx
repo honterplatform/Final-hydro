@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import brandTokens from '../brandTokens';
 import { codeToName } from '../data/states';
-import { getReps, createRep, updateRep, deleteRep, resetReps } from '../services/repService';
+import { getReps, createRep, updateRep, deleteRep, resetReps, subscribeToRepsUpdates } from '../services/apiService';
 
 const AdminPanel = ({ onClose }) => {
   const [reps, setReps] = useState(null);
@@ -13,7 +13,7 @@ const AdminPanel = ({ onClose }) => {
     profileImage: ''
   });
 
-  // Load reps from API on component mount
+  // Load reps from API on component mount and set up real-time subscriptions
   useEffect(() => {
     const loadReps = async () => {
       try {
@@ -27,7 +27,33 @@ const AdminPanel = ({ onClose }) => {
         });
       }
     };
+    
     loadReps();
+
+    // Set up real-time subscription for live updates (with polling fallback)
+    let subscription = null;
+    
+    const setupSubscription = async () => {
+      try {
+        subscription = await subscribeToRepsUpdates((payload) => {
+          console.log('Admin panel received update:', payload);
+          
+          // Refresh data when any change occurs
+          loadReps();
+        });
+      } catch (error) {
+        console.error('Failed to set up admin subscription:', error);
+      }
+    };
+    
+    setupSubscription();
+
+    // Cleanup subscription on unmount
+    return () => {
+      if (subscription && typeof subscription.unsubscribe === 'function') {
+        subscription.unsubscribe();
+      }
+    };
   }, []);
 
   // Dispatch custom event when reps change
@@ -124,7 +150,7 @@ const AdminPanel = ({ onClose }) => {
   const handleEdit = (index) => {
     const rep = reps[index];
     setFormData({
-      rep: rep.rep,
+      rep: rep.rep || rep.rep_name || rep.representative || '',
       states: rep.states,
       ctaUrl: rep.cta_url || rep.ctaUrl || '',
       profileImage: rep.profile_image || rep.profileImage || ''
@@ -536,7 +562,7 @@ const AdminPanel = ({ onClose }) => {
                 {(rep.profile_image || rep.profileImage) ? (
                   <img
                     src={rep.profile_image || rep.profileImage}
-                    alt={`${rep.rep} profile`}
+                    alt={`${rep.rep || rep.rep_name || rep.representative || 'Representative'} profile`}
                     style={{
                       width: '48px',
                       height: '48px',
@@ -562,7 +588,7 @@ const AdminPanel = ({ onClose }) => {
                       fontSize: '16px',
                       fontWeight: '500',
                     }}>
-                      {rep.rep.charAt(0).toUpperCase()}
+                      {(rep.rep || rep.rep_name || rep.representative || 'R').charAt(0).toUpperCase()}
                     </span>
                   </div>
                 )}
@@ -573,7 +599,7 @@ const AdminPanel = ({ onClose }) => {
                   fontWeight: '400',
                   color: brandTokens.colors.text,
                 }}>
-                  {rep.rep}
+                  {rep.rep || rep.rep_name || rep.representative || 'Unknown Representative'}
                 </h4>
                 <p style={{
                   margin: '0 0 2px 0',

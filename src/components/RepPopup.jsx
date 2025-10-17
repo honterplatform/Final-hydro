@@ -160,7 +160,8 @@ const RepPopup = ({ visible, x, y, reps, stateName, selectedCode, onClose, onRep
       {reps.length > 0 ? (
         reps.flatMap((repData, repIndex) => {
           // Split names by comma and "&" to separate individual representatives
-          const individualReps = repData.rep
+          const repName = repData.rep || repData.rep_name || repData.representative || '';
+          const individualReps = repName
             .split(/,\s*|\s+&\s+/)
             .map(name => name.trim())
             .filter(name => name.length > 0);
@@ -249,7 +250,7 @@ const RepPopup = ({ visible, x, y, reps, stateName, selectedCode, onClose, onRep
                            </div>
                          </div>
                          <a 
-                           href={repData.ctaUrl} 
+                           href={repData.ctaUrl || repData.cta_url || '#'} 
                            style={{
                              background: brandTokens.colors.selected,
                              color: 'white',

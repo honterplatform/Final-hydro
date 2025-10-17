@@ -49,11 +49,12 @@ const MobileStateList = ({ onStateSelect, onRepHover, onRepLeave }) => {
           if (!mapping[stateCode]) {
             mapping[stateCode] = [];
           }
-          if (!mapping[stateCode].find(r => r.rep === repData.rep)) {
+          const repName = repData.rep || repData.rep_name || repData.representative || '';
+          if (!mapping[stateCode].find(r => r.rep === repName)) {
             mapping[stateCode].push({
-              rep: repData.rep,
+              rep: repName,
               states: repData.states,
-              ctaUrl: repData.cta_url,
+              ctaUrl: repData.cta_url || repData.ctaUrl || '#',
               profileImage: repData.profileImage || repData.profile_image
             });
           }
@@ -96,14 +97,16 @@ const MobileStateList = ({ onStateSelect, onRepHover, onRepLeave }) => {
 
   const handleRepClick = (repData) => {
     // Split combined names and handle each individually
-    const individualReps = repData.rep
+    const repName = repData.rep || repData.representative || '';
+    const individualReps = repName
       .split(/,\s*|\s+&\s+/)
       .map(name => name.trim())
       .filter(name => name.length > 0);
     
     // For now, just open the first rep's URL
-    if (repData.ctaUrl && repData.ctaUrl !== '#') {
-      window.open(repData.ctaUrl, '_blank');
+    const ctaUrl = repData.ctaUrl || repData.cta_url || '#';
+    if (ctaUrl && ctaUrl !== '#') {
+      window.open(ctaUrl, '_blank');
     }
   };
 
@@ -158,7 +161,8 @@ const MobileStateList = ({ onStateSelect, onRepHover, onRepLeave }) => {
           {repsData
             .filter(repData => repData.states && repData.states.includes(selectedState))
             .flatMap((repData, repIndex) => {
-              const individualReps = repData.rep
+              const repName = repData.rep || repData.rep_name || repData.representative || '';
+              const individualReps = repName
                 .split(/,\s*|\s+&\s+/)
                 .map(name => name.trim())
                 .filter(name => name.length > 0);

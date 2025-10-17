@@ -1,18 +1,19 @@
-// API service - using Vercel Postgres database
-const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://hydro-map-xi.vercel.app/api' 
-  : 'http://localhost:3002/api'; // Use local API for development
+// API service - using Supabase with real-time updates
+import { 
+  getRepresentatives, 
+  createRepresentative, 
+  updateRepresentative, 
+  deleteRepresentative, 
+  resetRepresentatives,
+  subscribeToRepresentatives 
+} from './supabaseService.js';
 
 // Get all representatives
 export const getReps = async () => {
   try {
-    const response = await fetch(`${API_BASE_URL}/reps`);
-    if (!response.ok) {
-      throw new Error('Failed to fetch representatives');
-    }
-    return await response.json();
+    return await getRepresentatives();
   } catch (error) {
-    console.error('API error, falling back to localStorage:', error);
+    console.error('Supabase error, falling back to localStorage:', error);
     // Fallback to localStorage
     const localData = localStorage.getItem('representatives');
     if (localData) {
@@ -27,21 +28,9 @@ export const getReps = async () => {
 // Create new representative
 export const createRep = async (repData) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/reps`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(repData),
-    });
-    
-    if (!response.ok) {
-      throw new Error('Failed to create representative');
-    }
-    
-    return await response.json();
+    return await createRepresentative(repData);
   } catch (error) {
-    console.error('API error, falling back to localStorage:', error);
+    console.error('Supabase error, falling back to localStorage:', error);
     // Fallback to localStorage
     const localData = localStorage.getItem('representatives');
     let reps = localData ? JSON.parse(localData) : [];
@@ -62,21 +51,9 @@ export const createRep = async (repData) => {
 // Update representative
 export const updateRep = async (id, repData) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/update-rep`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ id, ...repData }),
-    });
-    
-    if (!response.ok) {
-      throw new Error('Failed to update representative');
-    }
-    
-    return await response.json();
+    return await updateRepresentative(id, repData);
   } catch (error) {
-    console.error('API error, falling back to localStorage:', error);
+    console.error('Supabase error, falling back to localStorage:', error);
     // Fallback to localStorage
     const localData = localStorage.getItem('representatives');
     let reps = localData ? JSON.parse(localData) : [];
@@ -100,21 +77,9 @@ export const updateRep = async (id, repData) => {
 // Delete representative
 export const deleteRep = async (id) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/delete-rep`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ id }),
-    });
-    
-    if (!response.ok) {
-      throw new Error('Failed to delete representative');
-    }
-    
-    return await response.json();
+    return await deleteRepresentative(id);
   } catch (error) {
-    console.error('API error, falling back to localStorage:', error);
+    console.error('Supabase error, falling back to localStorage:', error);
     // Fallback to localStorage
     const localData = localStorage.getItem('representatives');
     let reps = localData ? JSON.parse(localData) : [];
@@ -139,17 +104,9 @@ export const deleteRep = async (id) => {
 // Reset to default data
 export const resetReps = async () => {
   try {
-    const response = await fetch(`${API_BASE_URL}/reps/reset`, {
-      method: 'POST',
-    });
-    
-    if (!response.ok) {
-      throw new Error('Failed to reset representatives');
-    }
-    
-    return await response.json();
+    return await resetRepresentatives();
   } catch (error) {
-    console.error('API error, falling back to localStorage:', error);
+    console.error('Supabase error, falling back to localStorage:', error);
     // Fallback to localStorage
     const { reps } = await import('../data/reps.js');
     localStorage.setItem('representatives', JSON.stringify(reps));
@@ -162,4 +119,23 @@ export const restoreOriginalData = async () => {
   const { reps } = await import('../data/reps.js');
   localStorage.setItem('representatives', JSON.stringify(reps));
   return reps;
+};
+
+// Real-time subscription for live updates (with polling fallback)
+export const subscribeToRepsUpdates = async (callback) => {
+  try {
+    // Try real-time first
+    const realtimeSubscription = subscribeToRepresentatives(callback);
+    
+    // Check if real-time subscription is working
+    if (realtimeSubscription && realtimeSubscription.status !== 'TIMED_OUT') {
+      return realtimeSubscription;
+    }
+  } catch (error) {
+    console.log('🔄 Real-time failed, falling back to polling...', error);
+  }
+  
+  // Fall back to polling
+  const { default: pollingService } = await import('./pollingService.js');
+  return pollingService.subscribe(callback);
 };
