@@ -11,17 +11,18 @@ import {
 // Get all representatives
 export const getReps = async () => {
   try {
-    return await getRepresentatives();
+    const data = await getRepresentatives();
+    return data;
   } catch (error) {
-    console.error('Supabase error, falling back to localStorage:', error);
-    // Fallback to localStorage
-    const localData = localStorage.getItem('representatives');
-    if (localData) {
-      return JSON.parse(localData);
+    console.error('Supabase error, falling back to local data:', error);
+    // Fallback to local data
+    try {
+      const { reps } = await import('../data/reps.js');
+      return reps;
+    } catch (fallbackError) {
+      console.error('Error loading local data:', fallbackError);
+      return [];
     }
-    // If no localStorage data, return original data
-    const { reps } = await import('../data/reps.js');
-    return reps;
   }
 };
 

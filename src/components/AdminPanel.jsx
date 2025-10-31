@@ -9,8 +9,9 @@ const AdminPanel = ({ onClose }) => {
   const [formData, setFormData] = useState({
     rep: '',
     states: [],
-    ctaUrl: '',
-    profileImage: ''
+    profileImage: '',
+    email: '',
+    phone: ''
   });
 
   // Load reps from API on component mount and set up real-time subscriptions
@@ -124,8 +125,9 @@ const AdminPanel = ({ onClose }) => {
       const repData = {
         rep: formData.rep.trim(),
         states: formData.states,
-        ctaUrl: formData.ctaUrl || '#',
-        profileImage: formData.profileImage || null
+        profileImage: formData.profileImage || null,
+        email: formData.email.trim() || null,
+        phone: formData.phone.trim() || null
       };
 
       if (editingRep !== null) {
@@ -139,7 +141,7 @@ const AdminPanel = ({ onClose }) => {
       }
 
       // Reset form
-      setFormData({ rep: '', states: [], ctaUrl: '', profileImage: '' });
+      setFormData({ rep: '', states: [], profileImage: '', email: '', phone: '' });
       setEditingRep(null);
     } catch (error) {
       console.error('Error saving representative:', error);
@@ -152,8 +154,9 @@ const AdminPanel = ({ onClose }) => {
     setFormData({
       rep: rep.rep || rep.rep_name || rep.representative || '',
       states: rep.states,
-      ctaUrl: rep.cta_url || rep.ctaUrl || '',
-      profileImage: rep.profile_image || rep.profileImage || ''
+      profileImage: rep.profileImage || rep.profile_image || '',
+      email: rep.email || '',
+      phone: rep.phone || ''
     });
     setEditingRep(index);
   };
@@ -171,7 +174,7 @@ const AdminPanel = ({ onClose }) => {
   };
 
   const handleCancel = () => {
-    setFormData({ rep: '', states: [], ctaUrl: '', profileImage: '' });
+    setFormData({ rep: '', states: [], profileImage: '', email: '', phone: '' });
     setEditingRep(null);
   };
 
@@ -388,6 +391,64 @@ const AdminPanel = ({ onClose }) => {
           />
         </div>
 
+        {/* Email Field */}
+        <div style={{ marginBottom: '16px' }}>
+          <label style={{
+            display: 'block',
+            marginBottom: '6px',
+            fontSize: '14px',
+            fontWeight: '400',
+            color: brandTokens.colors.text,
+          }}>
+            Email Address
+          </label>
+          <input
+            type="email"
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            placeholder="e.g., john@hydroblok.com"
+            style={{
+              width: '100%',
+              padding: '8px 12px',
+              border: `1px solid ${brandTokens.colors.border}`,
+              borderRadius: '6px',
+              fontSize: '14px',
+              backgroundColor: brandTokens.colors.background,
+              color: brandTokens.colors.text,
+              boxSizing: 'border-box',
+            }}
+          />
+        </div>
+
+        {/* Phone Field */}
+        <div style={{ marginBottom: '16px' }}>
+          <label style={{
+            display: 'block',
+            marginBottom: '6px',
+            fontSize: '14px',
+            fontWeight: '400',
+            color: brandTokens.colors.text,
+          }}>
+            Phone Number
+          </label>
+          <input
+            type="tel"
+            value={formData.phone}
+            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+            placeholder="e.g., (555) 123-4567"
+            style={{
+              width: '100%',
+              padding: '8px 12px',
+              border: `1px solid ${brandTokens.colors.border}`,
+              borderRadius: '6px',
+              fontSize: '14px',
+              backgroundColor: brandTokens.colors.background,
+              color: brandTokens.colors.text,
+              boxSizing: 'border-box',
+            }}
+          />
+        </div>
+
         <div style={{ marginBottom: '16px' }}>
           <label style={{
             display: 'block',
@@ -429,35 +490,6 @@ const AdminPanel = ({ onClose }) => {
           </div>
         </div>
 
-        <div style={{ marginBottom: '16px' }}>
-          <label style={{
-            display: 'block',
-            marginBottom: '6px',
-            fontSize: '14px',
-            fontWeight: '400',
-            color: brandTokens.colors.text,
-          }}>
-            CTA URL
-          </label>
-          <input
-            type="url"
-            value={formData.ctaUrl}
-            onChange={(e) => handleInputChange('ctaUrl', e.target.value)}
-            placeholder="https://example.com/contact"
-            style={{
-              width: '100%',
-              padding: '10px 14px',
-              border: `1px solid ${brandTokens.colors.border}`,
-              borderRadius: '6px',
-              fontSize: '14px',
-              fontFamily: brandTokens.font,
-              outline: 'none',
-              backgroundColor: 'white',
-            }}
-            onFocus={(e) => e.target.style.borderColor = brandTokens.colors.selected}
-            onBlur={(e) => e.target.style.borderColor = brandTokens.colors.border}
-          />
-        </div>
 
         <div style={{
           display: 'flex',
@@ -608,13 +640,24 @@ const AdminPanel = ({ onClose }) => {
                 }}>
                   States: {rep.states.map(code => codeToName[code]).join(', ')}
                 </p>
-                <p style={{
-                  margin: 0,
-                  fontSize: '11px',
-                  color: '#9ca3af',
-                }}>
-                  URL: {rep.cta_url || rep.ctaUrl || 'Not set'}
-                </p>
+                {rep.email && (
+                  <p style={{
+                    margin: '2px 0 0 0',
+                    fontSize: '11px',
+                    color: '#9ca3af',
+                  }}>
+                    Email: {rep.email}
+                  </p>
+                )}
+                {rep.phone && (
+                  <p style={{
+                    margin: '2px 0 0 0',
+                    fontSize: '11px',
+                    color: '#9ca3af',
+                  }}>
+                    Phone: {rep.phone}
+                  </p>
+                )}
                 </div>
               </div>
               <div style={{ display: 'flex', gap: '6px' }}>

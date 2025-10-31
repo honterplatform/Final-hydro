@@ -1,8 +1,8 @@
 import { createClient } from '@supabase/supabase-js';
 
 // Supabase configuration
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://iwduqebhrphrzuzrqnyv.supabase.co';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3ZHVxZWJocnBocnp1enJxbnl2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2NDczNTEsImV4cCI6MjA3NjIyMzM1MX0.ilNCgl1NCxVYRknNhoPEidNOxHQFM6lHtLpGMWvyjG0';
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://qaxjziqgzckyidmvobev.supabase.co';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFheGp6aXFnemNreWlkbXZvYmV2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2MzI2MjIsImV4cCI6MjA3NjIwODYyMn0.87VwhwJLFuZPwaRP2O-4XA4xozlX1FErTg08aP7SsJE';
 
 // Create Supabase client
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
@@ -55,7 +55,9 @@ export const createRepresentative = async (repData) => {
       rep_name: repData.rep || repData.rep_name || repData.representative || '',
       states: repData.states || [],
       cta_url: repData.ctaUrl || repData.cta_url || '',
-      profile_image: repData.profileImage || repData.profile_image || ''
+      profile_image: repData.profileImage || repData.profile_image || '',
+      email: repData.email || '',
+      phone: repData.phone || ''
     };
 
     const { data, error } = await supabase
@@ -83,7 +85,9 @@ export const updateRepresentative = async (id, repData) => {
       rep_name: repData.rep || repData.rep_name || repData.representative || '',
       states: repData.states || [],
       cta_url: repData.ctaUrl || repData.cta_url || '',
-      profile_image: repData.profileImage || repData.profile_image || ''
+      profile_image: repData.profileImage || repData.profile_image || '',
+      email: repData.email || '',
+      phone: repData.phone || ''
     };
 
     const { data, error } = await supabase

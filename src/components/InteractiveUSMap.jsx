@@ -105,8 +105,10 @@ const InteractiveUSMap = () => {
           mapping[stateCode].push({
             rep: repData.rep || repData.rep_name || repData.representative || '',
             states: repData.states,
-            ctaUrl: repData.cta_url || repData.ctaUrl || '#',
-            profileImage: repData.profileImage || repData.profile_image
+            ctaUrl: repData.ctaUrl || repData.cta_url || '#',
+            profileImage: repData.profileImage || repData.profile_image,
+            email: repData.email,
+            phone: repData.phone
           });
         });
       }
