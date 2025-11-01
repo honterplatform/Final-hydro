@@ -11,7 +11,11 @@ const AdminPanel = ({ onClose }) => {
     states: [],
     profileImage: '',
     email: '',
-    phone: ''
+    phone: '',
+    webhook: '',
+    color: '',
+    territory: '',
+    region: ''
   });
 
   // Load reps from API on component mount and set up real-time subscriptions
@@ -127,7 +131,11 @@ const AdminPanel = ({ onClose }) => {
         states: formData.states,
         profileImage: formData.profileImage || null,
         email: formData.email.trim() || null,
-        phone: formData.phone.trim() || null
+        phone: formData.phone.trim() || null,
+        webhook: formData.webhook.trim() || null,
+        color: formData.color.trim() || null,
+        territory: formData.territory.trim() || null,
+        region: formData.region.trim() || null
       };
 
       if (editingRep !== null) {
@@ -141,7 +149,7 @@ const AdminPanel = ({ onClose }) => {
       }
 
       // Reset form
-      setFormData({ rep: '', states: [], profileImage: '', email: '', phone: '' });
+      setFormData({ rep: '', states: [], profileImage: '', email: '', phone: '', webhook: '', color: '', territory: '', region: '' });
       setEditingRep(null);
     } catch (error) {
       console.error('Error saving representative:', error);
@@ -156,7 +164,11 @@ const AdminPanel = ({ onClose }) => {
       states: rep.states,
       profileImage: rep.profileImage || rep.profile_image || '',
       email: rep.email || '',
-      phone: rep.phone || ''
+      phone: rep.phone || '',
+      webhook: rep.webhook || '',
+      color: rep.color || '',
+      territory: rep.territory || '',
+      region: rep.region || ''
     });
     setEditingRep(index);
   };
@@ -174,7 +186,7 @@ const AdminPanel = ({ onClose }) => {
   };
 
   const handleCancel = () => {
-    setFormData({ rep: '', states: [], profileImage: '', email: '', phone: '' });
+    setFormData({ rep: '', states: [], profileImage: '', email: '', phone: '', webhook: '', color: '', territory: '', region: '' });
     setEditingRep(null);
   };
 
@@ -449,6 +461,133 @@ const AdminPanel = ({ onClose }) => {
           />
         </div>
 
+        {/* Webhook Field */}
+        <div style={{ marginBottom: '16px' }}>
+          <label style={{
+            display: 'block',
+            marginBottom: '6px',
+            fontSize: '14px',
+            fontWeight: '400',
+            color: brandTokens.colors.text,
+          }}>
+            Webhook URL
+          </label>
+          <input
+            type="url"
+            value={formData.webhook}
+            onChange={(e) => setFormData({ ...formData, webhook: e.target.value })}
+            placeholder="e.g., https://hooks.zapier.com/hooks/catch/..."
+            style={{
+              width: '100%',
+              padding: '8px 12px',
+              border: `1px solid ${brandTokens.colors.border}`,
+              borderRadius: '6px',
+              fontSize: '14px',
+              backgroundColor: brandTokens.colors.background,
+              color: brandTokens.colors.text,
+              boxSizing: 'border-box',
+            }}
+          />
+        </div>
+
+        {/* Color Field */}
+        <div style={{ marginBottom: '16px' }}>
+          <label style={{
+            display: 'block',
+            marginBottom: '6px',
+            fontSize: '14px',
+            fontWeight: '400',
+            color: brandTokens.colors.text,
+          }}>
+            Territory Color (Hex Code)
+          </label>
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <input
+              type="text"
+              value={formData.color}
+              onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+              placeholder="e.g., #2d5f3f"
+              style={{
+                flex: 1,
+                padding: '8px 12px',
+                border: `1px solid ${brandTokens.colors.border}`,
+                borderRadius: '6px',
+                fontSize: '14px',
+                backgroundColor: brandTokens.colors.background,
+                color: brandTokens.colors.text,
+                boxSizing: 'border-box',
+              }}
+            />
+            {formData.color && (
+              <div style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '6px',
+                backgroundColor: formData.color,
+                border: `1px solid ${brandTokens.colors.border}`,
+              }}></div>
+            )}
+          </div>
+        </div>
+
+        {/* Territory Field */}
+        <div style={{ marginBottom: '16px' }}>
+          <label style={{
+            display: 'block',
+            marginBottom: '6px',
+            fontSize: '14px',
+            fontWeight: '400',
+            color: brandTokens.colors.text,
+          }}>
+            Territory Description
+          </label>
+          <input
+            type="text"
+            value={formData.territory}
+            onChange={(e) => setFormData({ ...formData, territory: e.target.value })}
+            placeholder="e.g., Washington, Alaska"
+            style={{
+              width: '100%',
+              padding: '8px 12px',
+              border: `1px solid ${brandTokens.colors.border}`,
+              borderRadius: '6px',
+              fontSize: '14px',
+              backgroundColor: brandTokens.colors.background,
+              color: brandTokens.colors.text,
+              boxSizing: 'border-box',
+            }}
+          />
+        </div>
+
+        {/* Region Field */}
+        <div style={{ marginBottom: '16px' }}>
+          <label style={{
+            display: 'block',
+            marginBottom: '6px',
+            fontSize: '14px',
+            fontWeight: '400',
+            color: brandTokens.colors.text,
+          }}>
+            Region (for split states)
+          </label>
+          <input
+            type="text"
+            value={formData.region}
+            onChange={(e) => setFormData({ ...formData, region: e.target.value })}
+            placeholder="e.g., Northern, Southern, East, West (leave empty if not split)"
+            style={{
+              width: '100%',
+              padding: '8px 12px',
+              border: `1px solid ${brandTokens.colors.border}`,
+              borderRadius: '6px',
+              fontSize: '14px',
+              backgroundColor: brandTokens.colors.background,
+              color: brandTokens.colors.text,
+              boxSizing: 'border-box',
+            }}
+          />
+        </div>
+
         <div style={{ marginBottom: '16px' }}>
           <label style={{
             display: 'block',
@@ -656,6 +795,24 @@ const AdminPanel = ({ onClose }) => {
                     color: '#9ca3af',
                   }}>
                     Phone: {rep.phone}
+                  </p>
+                )}
+                {rep.territory && (
+                  <p style={{
+                    margin: '2px 0 0 0',
+                    fontSize: '11px',
+                    color: '#9ca3af',
+                  }}>
+                    Territory: {rep.territory}
+                  </p>
+                )}
+                {rep.region && (
+                  <p style={{
+                    margin: '2px 0 0 0',
+                    fontSize: '11px',
+                    color: '#9ca3af',
+                  }}>
+                    Region: {rep.region}
                   </p>
                 )}
                 </div>

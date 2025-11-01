@@ -102,17 +102,23 @@ const InteractiveUSMap = () => {
             mapping[stateCode] = [];
           }
           // Add the representative to each state they cover (no duplicate check)
-          mapping[stateCode].push({
+          const repEntry = {
             rep: repData.rep || repData.rep_name || repData.representative || '',
             states: repData.states,
             ctaUrl: repData.ctaUrl || repData.cta_url || '#',
             profileImage: repData.profileImage || repData.profile_image,
             email: repData.email,
-            phone: repData.phone
-          });
+            phone: repData.phone,
+            webhook: repData.webhook,
+            color: repData.color,
+            territory: repData.territory,
+            region: repData.region
+          };
+          mapping[stateCode].push(repEntry);
         });
       }
     });
+    console.log('RepsByState mapping with colors:', mapping);
     return mapping;
   }, [repsData]);
 
@@ -151,7 +157,13 @@ const InteractiveUSMap = () => {
       return '#E8F5E8'; // Light green highlight
     }
     if (repsByState[stateCode] && repsByState[stateCode].length > 0) {
-      return brandTokens.colors.assigned;
+      // Use the first rep's color if available, otherwise use default assigned color
+      const firstRep = repsByState[stateCode][0];
+      const color = firstRep.color || brandTokens.colors.assigned;
+      if (stateCode === 'CA') {
+        console.log('CA color:', color, 'from rep:', firstRep);
+      }
+      return color;
     }
     return brandTokens.colors.unassigned;
   };

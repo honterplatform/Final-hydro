@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect, useRef } from 'react';
 import brandTokens from '../brandTokens';
 import { getReps } from '../services/repService';
 import { codeToName } from '../data/states';
+import { LeadForm } from './LeadForm';
 
 const MobileStateList = ({ onStateSelect, onRepHover, onRepLeave }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -9,8 +10,8 @@ const MobileStateList = ({ onStateSelect, onRepHover, onRepLeave }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [refreshKey, setRefreshKey] = useState(0);
   const [repsData, setRepsData] = useState([]);
-  const [showingContactInfo, setShowingContactInfo] = useState(null);
-  const contactTimerRef = useRef(null);
+  const [showLeadForm, setShowLeadForm] = useState(false);
+  const [selectedRep, setSelectedRep] = useState(null);
   const ITEMS_PER_PAGE = 10;
 
   // Load reps data
@@ -92,71 +93,31 @@ const MobileStateList = ({ onStateSelect, onRepHover, onRepLeave }) => {
   const handleSearchChange = (value) => {
     setSearchTerm(value);
     setCurrentPage(0);
-    // Reset contact info state when searching
-    setShowingContactInfo(null);
-    // Clear any existing timer
-    if (contactTimerRef.current) {
-      clearTimeout(contactTimerRef.current);
-      contactTimerRef.current = null;
-    }
+    setShowLeadForm(false);
+    setSelectedRep(null);
   };
 
   const handleStateClick = (stateCode) => {
     setSelectedState(stateCode);
-    // Reset contact info state when selecting a new state
-    setShowingContactInfo(null);
-    // Clear any existing timer
-    if (contactTimerRef.current) {
-      clearTimeout(contactTimerRef.current);
-      contactTimerRef.current = null;
-    }
+    setShowLeadForm(false);
+    setSelectedRep(null);
     onStateSelect(stateCode, stateReps[stateCode]);
   };
 
-  // Cleanup timer on unmount
-  useEffect(() => {
-    return () => {
-      if (contactTimerRef.current) {
-        clearTimeout(contactTimerRef.current);
-      }
-    };
-  }, []);
-
-  const handleLetsTalkClick = (repData, repIndex) => {
-    // Clear any existing timer
-    if (contactTimerRef.current) {
-      clearTimeout(contactTimerRef.current);
-    }
-
-    // Set showing contact info for this specific rep
-    setShowingContactInfo(repIndex);
-
-    // Set timer to revert after 10 seconds
-    contactTimerRef.current = setTimeout(() => {
-      setShowingContactInfo(null);
-    }, 10000);
+  const handleLetsTalkClick = (repData) => {
+    setSelectedRep(repData);
+    setShowLeadForm(true);
   };
 
-  const handleHideContact = () => {
-    // Clear any existing timer
-    if (contactTimerRef.current) {
-      clearTimeout(contactTimerRef.current);
-      contactTimerRef.current = null;
-    }
-    
-    // Immediately hide contact info
-    setShowingContactInfo(null);
+  const handleCloseLeadForm = () => {
+    setShowLeadForm(false);
+    setSelectedRep(null);
   };
 
   const handleBackToStates = () => {
     setSelectedState(null);
-    // Reset contact info state when going back to states
-    setShowingContactInfo(null);
-    // Clear any existing timer
-    if (contactTimerRef.current) {
-      clearTimeout(contactTimerRef.current);
-      contactTimerRef.current = null;
-    }
+    setShowLeadForm(false);
+    setSelectedRep(null);
   };
 
   if (selectedState) {
@@ -282,94 +243,62 @@ const MobileStateList = ({ onStateSelect, onRepHover, onRepLeave }) => {
                         </div>
                       )}
                       <div style={{ flex: 1 }}>
-                        {showingContactInfo === repIndex ? (
-                          <>
-                            <h3 style={{
-                              fontSize: '16px',
-                              fontWeight: '400',
-                              margin: '0 0 4px 0',
-                              color: brandTokens.colors.text,
-                            }}>
-                              {repData.email || 'No email available'}
-                            </h3>
-                            <p style={{
-                              fontSize: '12px',
-                              color: '#6b7280',
-                              margin: 0,
-                            }}>
-                              {repData.phone || 'No phone available'}
-                            </p>
-                          </>
-                        ) : (
-                          <>
-                            <h3 style={{
-                              fontSize: '16px',
-                              fontWeight: '400',
-                              margin: '0 0 4px 0',
-                              color: brandTokens.colors.text,
-                            }}>
-                              {individualName}
-                            </h3>
-                            {otherStates.length > 0 && (
-                              <p style={{
-                                fontSize: '12px',
-                                color: '#6b7280',
-                                margin: 0,
-                              }}>
-                                Also available in {otherStates.join(', ')}
-                              </p>
-                            )}
-                          </>
+                        <h3 style={{
+                          fontSize: '16px',
+                          fontWeight: '400',
+                          margin: '0 0 4px 0',
+                          color: brandTokens.colors.text,
+                        }}>
+                          {individualName}
+                        </h3>
+                        <p style={{
+                          fontSize: '12px',
+                          color: '#6b7280',
+                          margin: 0,
+                        }}>
+                          {repData.phone || 'No phone available'}
+                        </p>
+                        {otherStates.length > 0 && (
+                          <p style={{
+                            fontSize: '12px',
+                            color: '#6b7280',
+                            margin: '2px 0 0 0',
+                          }}>
+                            Also available in {otherStates.join(', ')}
+                          </p>
                         )}
                       </div>
                     </div>
-                    {showingContactInfo === repIndex ? (
-                      <button
-                        onClick={handleHideContact}
-                        style={{
-                          background: brandTokens.colors.selected,
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '50%',
-                          width: '32px',
-                          height: '32px',
-                          fontSize: '18px',
-                          fontWeight: '400',
-                          cursor: 'pointer',
-                          marginLeft: '12px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          padding: 0,
-                        }}
-                        title="Hide contact info"
-                      >
-                        ×
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => handleLetsTalkClick(repData, repIndex)}
-                        style={{
-                          background: brandTokens.colors.selected,
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '6px',
-                          padding: '8px 16px',
-                          fontSize: '14px',
-                          fontWeight: '400',
-                          cursor: 'pointer',
-                          marginLeft: '12px',
-                        }}
-                      >
-                        Let's Talk
-                      </button>
-                    )}
+                    <button
+                      onClick={() => handleLetsTalkClick(repData)}
+                      style={{
+                        background: brandTokens.colors.selected,
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '6px',
+                        padding: '8px 16px',
+                        fontSize: '14px',
+                        fontWeight: '400',
+                        cursor: 'pointer',
+                        marginLeft: '12px',
+                      }}
+                    >
+                      Let's Talk
+                    </button>
                   </div>
                 </div>
               );
             });
           })}
         </div>
+
+        {selectedRep && (
+          <LeadForm
+            rep={selectedRep}
+            visible={showLeadForm}
+            onClose={handleCloseLeadForm}
+          />
+        )}
       </div>
     );
   }
@@ -527,6 +456,14 @@ const MobileStateList = ({ onStateSelect, onRepHover, onRepLeave }) => {
           </div>
         )}
       </div>
+
+      {selectedRep && (
+        <LeadForm
+          rep={selectedRep}
+          visible={showLeadForm}
+          onClose={handleCloseLeadForm}
+        />
+      )}
     </div>
   );
 };

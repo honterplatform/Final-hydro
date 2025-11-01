@@ -12,10 +12,10 @@ import {
 export const getReps = async () => {
   try {
     const data = await getRepresentatives();
+    console.log('✅ Loading from Supabase:', data.length, 'representatives');
     return data;
   } catch (error) {
     console.error('Supabase error, falling back to local data:', error);
-    // Fallback to local data
     try {
       const { reps } = await import('../data/reps.js');
       return reps;

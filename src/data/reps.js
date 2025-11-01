@@ -1,20 +1,132 @@
 export const reps = [
-  { rep: "Randy Blackmon", states: ["FL", "GA", "AL", "NC", "SC", "TN"], ctaUrl: "#", email: "randyb@hydroblok.com", phone: "(404) 386-4860" },
-  { rep: "Jeremy Ross", states: ["LA", "MS", "TN"], ctaUrl: "#", email: "jeremy@hydroblok.com", phone: "(225) 278-0736" },
-  { rep: "Joe Gebbia", states: ["MI", "MN", "WI", "IL", "IN", "OH", "KY", "IA"], ctaUrl: "#", email: "jgebbia@hydroblok.com", phone: "(262) 278-3488" },
-  { rep: "Ken Smith", states: ["PA", "NJ", "DE"], ctaUrl: "#", email: "kens@hydroblok.com", phone: "(215) 237-2509" },
-  { rep: "Luke Rice", states: ["PA", "NY", "NH", "MA", "CT", "RI", "MD", "VA", "VT", "ME"], ctaUrl: "#", email: "luke@hydroblok.com", phone: "(610) 301-9993" },
-  { rep: "Dan Livesay", states: ["NE", "KS", "OK", "AR", "MO"], ctaUrl: "#", email: "danl@hydroblok.com", phone: "(501) 520-9609" },
-  { rep: "Pat Tuel", states: ["CA", "NV"], ctaUrl: "#", email: "patt@hydroblok.com", phone: "(925) 584-9825" },
-  { rep: "Trina Tuel", states: ["CA", "NV"], ctaUrl: "#", email: "trina@sandkmarketiinggroupllc.com", phone: "(925) 595-3794" },
-  { rep: "Rick Coury", states: ["CA", "NV"], ctaUrl: "#", email: "rickc@hydroblok.com", phone: "(714) 915-1995" },
-  { rep: "Phil Kristianson", states: ["HI"], ctaUrl: "#", email: "philk@hydroblok.com", phone: "(916) 439-7585" },
-  { rep: "Lilly Kristianson", states: ["HI"], ctaUrl: "#", email: "lillyk@hydroblok.com", phone: "(916) 439-7585" },
-  { rep: "Kurt Hodson", states: ["CA", "NV", "AZ", "NM", "UT", "CO", "WY", "MT", "ID", "WA", "OR"], ctaUrl: "#", email: "kurth@hydroblok.com", phone: "(541) 647-0553" },
-  { rep: "Brian Wright", states: ["CA", "NV", "AZ", "NM", "UT", "CO", "WY", "MT", "ID", "WA", "OR"], ctaUrl: "#", email: "brianw@hydroblok.com", phone: "(206) 423-0705" },
-  { rep: "Todd Morris", states: ["AZ", "NM", "UT", "CO", "WY", "MT", "ID"], ctaUrl: "#", email: "toddm@hydroblokusa.com", phone: "(253) 225-1885" },
-  { rep: "Will McHarness", states: ["OR"], ctaUrl: "#", email: "willm@hydroblok.com", phone: "(971) 710-5606" },
-  { rep: "Alex Ananko", states: ["WA", "ID"], ctaUrl: "#", email: "alexa@hydroblok.com", phone: "(425) 359-5791" },
-  { rep: "Aaron Schultz", states: ["WA", "ID", "MT"], ctaUrl: "#", email: "aarons@hydroblok.com", phone: "(206) 741-7033" },
-  { rep: "Jacob Welch", states: ["TX"], ctaUrl: "#", email: "jacob.w@hydroblok.com", phone: "(832) 322-9921" }
+  {
+    rep: "Aaron Schultz",
+    states: ["WA", "AK"],
+    territory: "Washington, Alaska",
+    phone: "(206) 741-7033",
+    email: "aarons@hydroblok.com",
+    webhook: "https://hooks.zapier.com/hooks/catch/9970204/uii2gv7/",
+    color: "#509E2E",
+    region: null
+  },
+  {
+    rep: "Will McHarness",
+    states: ["OR"],
+    territory: "Oregon",
+    phone: "(971) 710-5606",
+    email: "willm@hydroblok.com",
+    webhook: "https://hooks.zapier.com/hooks/catch/9970204/uii1k61/",
+    color: "#63B839",
+    region: null
+  },
+  {
+    rep: "Rick Coury",
+    states: ["CA", "NV"],
+    territory: "Southern California & Southern Nevada",
+    phone: "(714) 915-1995",
+    email: "rickc@hydroblok.com",
+    webhook: "https://hooks.zapier.com/hooks/catch/9970204/uii1ahv/",
+    color: "#3D7A23",
+    region: "Southern"
+  },
+  {
+    rep: "Pat & Trina Tuel",
+    states: ["CA", "NV"],
+    territory: "Northern California & Northern Nevada",
+    phone: "(925) 584-9825",
+    email: "patt@hydroblok.com",
+    webhook: "https://hooks.zapier.com/hooks/catch/9970204/uii1lyk/",
+    color: "#76D047",
+    region: "Northern"
+  },
+  {
+    rep: "Todd Morris",
+    states: ["AZ", "NM", "UT", "CO", "WY", "MT", "ID"],
+    territory: "Mountain & SW Region",
+    phone: "(253) 225-1885",
+    email: "toddm@hydroblokusa.com",
+    webhook: "https://hooks.zapier.com/hooks/catch/9970204/uii1cic/",
+    color: "#429525",
+    region: null
+  },
+  {
+    rep: "Phil & Lilly Kristianson",
+    states: ["HI"],
+    territory: "Hawaii",
+    phone: "(916) 439-7585",
+    email: "philk@hydroblok.com",
+    webhook: "https://hooks.zapier.com/hooks/catch/9970204/uii10kl/",
+    color: "#8FE85C",
+    region: null
+  },
+  {
+    rep: "Dan Livesay",
+    states: ["NE", "KS", "OK", "AR", "MO"],
+    territory: "Nebraska, Kansas, Oklahoma, Arkansas & Missouri",
+    phone: "(501) 520-9609",
+    email: "danl@hydroblok.com",
+    webhook: "https://hooks.zapier.com/hooks/catch/9970204/uii1p29/",
+    color: "#2F6B1C",
+    region: null
+  },
+  {
+    rep: "Jacob Welch",
+    states: ["TX"],
+    territory: "Texas",
+    phone: "(832) 322-9921",
+    email: "jacob.w@hydroblok.com",
+    webhook: "https://hooks.zapier.com/hooks/catch/9970204/uii1jr8/",
+    color: "#5CAD38",
+    region: null
+  },
+  {
+    rep: "Joe Gebbia",
+    states: ["MI", "MN", "WI", "IL", "IN", "OH", "KY", "IA"],
+    territory: "Michigan, Minnesota, Wisconsin, Illinois, Indiana, Ohio, Kentucky, Iowa",
+    phone: "(262) 278-3488",
+    email: "jgebbia@hydroblok.com",
+    webhook: "https://hooks.zapier.com/hooks/catch/9970204/uii9yaw/",
+    color: "#A3F871",
+    region: null
+  },
+  {
+    rep: "Ken Smith",
+    states: ["PA", "NJ", "DE"],
+    territory: "East Pennsylvania, New Jersey, Delaware",
+    phone: "(215) 237-2509",
+    email: "kens@hydroblok.com",
+    webhook: "https://hooks.zapier.com/hooks/catch/9970204/uii9b42/",
+    color: "#35811F",
+    region: "East"
+  },
+  {
+    rep: "Randy Blackmon",
+    states: ["FL", "GA", "AL", "NC", "SC", "TN"],
+    territory: "Florida, Georgia, Alabama, North Carolina, South Carolina, Middle & East Tennessee",
+    phone: "(404) 386-4860",
+    email: "randyb@hydroblok.com",
+    webhook: "https://hooks.zapier.com/hooks/catch/9970204/uii9243/",
+    color: "#6BC744",
+    region: "Middle & East"
+  },
+  {
+    rep: "Luke Rice",
+    states: ["PA", "NY", "NH", "MA", "CT", "RI", "MD", "VA", "VT", "ME"],
+    territory: "West Pennsylvania, New York (but not NYC), New Hampshire, Massachusetts, Connecticut, Rhode Island, Maryland, Virginia, Vermont, Maine",
+    phone: "(610) 301-9993",
+    email: "luke@hydroblok.com",
+    webhook: "https://hooks.zapier.com/hooks/catch/9970204/uii9uj0/",
+    color: "#4A9129",
+    region: "West"
+  },
+  {
+    rep: "Jeremy Ross",
+    states: ["LA", "MS", "TN"],
+    territory: "Louisiana, Mississippi, Western Tennessee",
+    phone: "(225) 278-0736",
+    email: "jeremy@hydroblok.com",
+    webhook: "https://hooks.zapier.com/hooks/catch/9970204/uii94vk/",
+    color: "#B8FF80",
+    region: "Western"
+  }
 ];

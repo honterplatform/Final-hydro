@@ -57,7 +57,11 @@ export const createRepresentative = async (repData) => {
       cta_url: repData.ctaUrl || repData.cta_url || '',
       profile_image: repData.profileImage || repData.profile_image || '',
       email: repData.email || '',
-      phone: repData.phone || ''
+      phone: repData.phone || '',
+      webhook: repData.webhook || '',
+      color: repData.color || '',
+      territory: repData.territory || '',
+      region: repData.region || null
     };
 
     const { data, error } = await supabase
@@ -87,7 +91,11 @@ export const updateRepresentative = async (id, repData) => {
       cta_url: repData.ctaUrl || repData.cta_url || '',
       profile_image: repData.profileImage || repData.profile_image || '',
       email: repData.email || '',
-      phone: repData.phone || ''
+      phone: repData.phone || '',
+      webhook: repData.webhook || '',
+      color: repData.color || '',
+      territory: repData.territory || '',
+      region: repData.region || null
     };
 
     const { data, error } = await supabase
@@ -142,10 +150,16 @@ export const resetRepresentatives = async () => {
     const { reps } = await import('../data/reps.js');
     
     const defaultData = reps.map((rep, index) => ({
-      rep: rep.rep,
+      rep_name: rep.rep,
       states: rep.states,
       cta_url: rep.ctaUrl || '#',
-      profile_image: null
+      profile_image: rep.profileImage || null,
+      email: rep.email || '',
+      phone: rep.phone || '',
+      webhook: rep.webhook || '',
+      color: rep.color || '',
+      territory: rep.territory || '',
+      region: rep.region || null
     }));
 
     const { data, error } = await supabase
