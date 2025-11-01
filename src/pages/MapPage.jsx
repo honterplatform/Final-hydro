@@ -8,7 +8,7 @@ const MapPage = () => {
   return (
     <div style={{
       width: '100%',
-      minHeight: '100vh',
+      minHeight: '100%',
       backgroundColor: brandTokens.colors.bg,
       fontFamily: brandTokens.font,
       margin: 0,
@@ -16,7 +16,7 @@ const MapPage = () => {
       boxSizing: 'border-box'
     }}>
       <div style={{
-        height: '100vh',
+        height: '800px',
         overflow: 'hidden',
         position: 'relative'
       }}>
