@@ -6,13 +6,15 @@ const MapPage = () => {
   return (
     <div style={{
       width: '100%',
-      height: '800px',
+      height: '100vh',
+      minHeight: '600px',
       backgroundColor: brandTokens.colors.bg,
       fontFamily: brandTokens.font,
       margin: 0,
       padding: 0,
       boxSizing: 'border-box',
-      overflow: 'hidden'
+      overflow: 'hidden',
+      position: 'relative'
     }}>
       <InteractiveUSMap />
     </div>
