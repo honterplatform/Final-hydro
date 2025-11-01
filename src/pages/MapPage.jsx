@@ -8,17 +8,21 @@ const MapPage = () => {
   return (
     <div style={{
       width: '100%',
-      minHeight: '100%',
+      height: 'auto',
       backgroundColor: brandTokens.colors.bg,
       fontFamily: brandTokens.font,
       margin: 0,
       padding: 0,
-      boxSizing: 'border-box'
+      boxSizing: 'border-box',
+      display: 'flex',
+      flexDirection: 'column'
     }}>
       <div style={{
+        width: '100%',
         height: '800px',
         overflow: 'hidden',
-        position: 'relative'
+        position: 'relative',
+        flexShrink: 0
       }}>
         <InteractiveUSMap />
       </div>
