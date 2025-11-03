@@ -256,7 +256,7 @@ const FormPage = () => {
                 </div>
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)',
+                  gridTemplateColumns: 'repeat(2, 1fr)',
                   gap: '8px'
                 }}>
                   {interestedOptions.map((option) => {
