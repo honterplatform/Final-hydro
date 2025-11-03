@@ -8,7 +8,8 @@ export const LeadForm = ({ rep, onClose, visible }) => {
     lastName: '',
     email: '',
     phone: '',
-    zip: ''
+    zip: '',
+    message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
@@ -26,6 +27,7 @@ export const LeadForm = ({ rep, onClose, visible }) => {
         lastName: formData.lastName,
         email: formData.email,
         zip: formData.zip,
+        message: formData.message,
         showerRep: rep.rep
       });
 
@@ -42,7 +44,7 @@ export const LeadForm = ({ rep, onClose, visible }) => {
       setTimeout(() => {
         onClose();
         setSubmitSuccess(false);
-        setFormData({ firstName: '', lastName: '', email: '', zip: '' });
+        setFormData({ firstName: '', lastName: '', email: '', zip: '', message: '' });
       }, 2000);
     } catch (error) {
       console.error('Form submission error:', error);
@@ -253,7 +255,7 @@ export const LeadForm = ({ rep, onClose, visible }) => {
                 style={{
                   width: '100%',
                   padding: '10px 0',
-                  marginBottom: '20px',
+                  marginBottom: '16px',
                   border: 'none',
                   borderBottom: '1px solid #e5e7eb',
                   borderRadius: '0',
@@ -263,6 +265,31 @@ export const LeadForm = ({ rep, onClose, visible }) => {
                   outline: 'none',
                   transition: 'border-color 0.2s',
                   backgroundColor: 'transparent'
+                }}
+                onFocus={(e) => e.target.style.borderBottomColor = '#509E2E'}
+                onBlur={(e) => e.target.style.borderBottomColor = '#e5e7eb'}
+              />
+              
+              <textarea
+                placeholder="Message"
+                value={formData.message}
+                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                rows={4}
+                style={{
+                  width: '100%',
+                  padding: '10px 0',
+                  marginBottom: '20px',
+                  border: 'none',
+                  borderBottom: '1px solid #e5e7eb',
+                  borderRadius: '0',
+                  fontSize: '14px',
+                  fontFamily: 'Aeonik, sans-serif',
+                  boxSizing: 'border-box',
+                  outline: 'none',
+                  transition: 'border-color 0.2s',
+                  backgroundColor: 'transparent',
+                  resize: 'vertical',
+                  minHeight: '80px'
                 }}
                 onFocus={(e) => e.target.style.borderBottomColor = '#509E2E'}
                 onBlur={(e) => e.target.style.borderBottomColor = '#e5e7eb'}
