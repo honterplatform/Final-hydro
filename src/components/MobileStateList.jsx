@@ -60,7 +60,9 @@ const MobileStateList = ({ onStateSelect, onRepHover, onRepLeave }) => {
               ctaUrl: repData.ctaUrl || repData.cta_url || '#',
               profileImage: repData.profileImage || repData.profile_image,
               email: repData.email,
-              phone: repData.phone
+              phone: repData.phone,
+              territory: repData.territory,
+              region: repData.region
             });
           }
         });
@@ -118,6 +120,45 @@ const MobileStateList = ({ onStateSelect, onRepHover, onRepLeave }) => {
     setSelectedState(null);
     setShowLeadForm(false);
     setSelectedRep(null);
+  };
+
+  // Helper function to extract territory info for the selected state
+  const getTerritoryForState = (repData, stateCode) => {
+    if (!repData.territory || !repData.region) {
+      return null;
+    }
+    
+    // Get state name from code
+    const stateNames = {
+      'CA': 'California',
+      'NV': 'Nevada',
+      'PA': 'Pennsylvania',
+      'TN': 'Tennessee',
+      'ID': 'Idaho',
+      'MT': 'Montana'
+    };
+    
+    const stateName = stateNames[stateCode];
+    if (!stateName) return null;
+    
+    // Extract the relevant part from territory string
+    const territory = repData.territory || '';
+    const region = repData.region || '';
+    
+    // For states split by region (North/South, East/West, etc.)
+    if (region && territory.includes(stateName)) {
+      // Split territory by common separators (comma, ampersand)
+      const parts = territory.split(/,\s*|\s+&\s+/);
+      for (const part of parts) {
+        if (part.includes(stateName) && part.includes(region)) {
+          return part.trim();
+        }
+      }
+      // Fallback: construct from region + stateName
+      return `${region} ${stateName}`;
+    }
+    
+    return null;
   };
 
   if (selectedState) {
@@ -258,6 +299,22 @@ const MobileStateList = ({ onStateSelect, onRepHover, onRepLeave }) => {
                         }}>
                           {repData.phone || 'No phone available'}
                         </p>
+                        {/* Show territory/region info for states with multiple reps */}
+                        {(() => {
+                          const stateRepsForState = repsData.filter(r => r.states && r.states.includes(selectedState));
+                          const hasMultipleReps = stateRepsForState.length > 1;
+                          const territoryInfo = getTerritoryForState(repData, selectedState);
+                          return hasMultipleReps && territoryInfo ? (
+                            <p style={{
+                              fontSize: '12px',
+                              color: '#509E2E',
+                              margin: '4px 0 0 0',
+                              fontWeight: '400',
+                            }}>
+                              {territoryInfo}
+                            </p>
+                          ) : null;
+                        })()}
                         {otherStates.length > 0 && (
                           <p style={{
                             fontSize: '12px',

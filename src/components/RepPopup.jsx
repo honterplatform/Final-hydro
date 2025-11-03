@@ -54,6 +54,45 @@ const RepPopup = ({ visible, x, y, reps, stateName, selectedCode, onClose, onRep
     setSelectedRep(null);
   };
 
+  // Helper function to extract territory info for the selected state
+  const getTerritoryForState = (repData, stateCode) => {
+    if (!repData.territory || !repData.region) {
+      return null;
+    }
+    
+    // Get state name from code
+    const stateNames = {
+      'CA': 'California',
+      'NV': 'Nevada',
+      'PA': 'Pennsylvania',
+      'TN': 'Tennessee',
+      'ID': 'Idaho',
+      'MT': 'Montana'
+    };
+    
+    const stateName = stateNames[stateCode];
+    if (!stateName) return null;
+    
+    // Extract the relevant part from territory string
+    const territory = repData.territory || '';
+    const region = repData.region || '';
+    
+    // For states split by region (North/South, East/West, etc.)
+    if (region && territory.includes(stateName)) {
+      // Split territory by common separators (comma, ampersand)
+      const parts = territory.split(/,\s*|\s+&\s+/);
+      for (const part of parts) {
+        if (part.includes(stateName) && part.includes(region)) {
+          return part.trim();
+        }
+      }
+      // Fallback: construct from region + stateName
+      return `${region} ${stateName}`;
+    }
+    
+    return null;
+  };
+
   if (!isVisible) return null;
 
   // Check if we're on mobile
@@ -260,6 +299,17 @@ const RepPopup = ({ visible, x, y, reps, stateName, selectedCode, onClose, onRep
                             }}>
                               {repData.phone || 'No phone available'}
                             </p>
+                            {/* Show territory/region info for states with multiple reps */}
+                            {reps.length > 1 && getTerritoryForState(repData, selectedCode) && (
+                              <p style={{
+                                fontSize: isMobile ? '11px' : '12px',
+                                color: '#509E2E',
+                                margin: '4px 0 0 0',
+                                fontWeight: '400',
+                              }}>
+                                {getTerritoryForState(repData, selectedCode)}
+                              </p>
+                            )}
                             {otherStates.length > 0 && (
                               <p style={{
                                 fontSize: isMobile ? '11px' : '12px',
