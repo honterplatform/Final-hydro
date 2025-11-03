@@ -129,7 +129,7 @@ const FormPage = () => {
       alignItems: 'flex-start'
     }}>
       <div style={{
-        maxWidth: '700px',
+        maxWidth: isMobile ? '100%' : '520px',
         width: '100%',
         padding: 0
       }}>
