@@ -257,67 +257,77 @@ const FormPage = () => {
                 <div style={{
                   display: 'grid',
                   gridTemplateColumns: 'repeat(2, 1fr)',
-                  gap: '8px'
+                  gap: '12px'
                 }}>
                   {interestedOptions.map((option) => {
                     const isSelected = formData.interestedIn.includes(option);
                     return (
-                      <button
+                      <label
                         key={option}
-                        type="button"
-                        onClick={() => handleInterestedInToggle(option)}
                         style={{
-                          width: '100%',
-                          padding: '12px 16px',
-                          textAlign: 'left',
-                          backgroundColor: isSelected ? 'rgba(80, 158, 46, 0.2)' : 'transparent',
-                          color: isSelected ? '#509E2E' : '#6b7280',
-                          border: isSelected ? '1px solid #509E2E' : '1px solid #e5e7eb',
-                          borderRadius: '6px',
-                          fontSize: '14px',
-                          fontFamily: 'Aeonik, sans-serif',
-                          cursor: 'pointer',
-                          transition: 'all 0.2s',
                           display: 'flex',
                           alignItems: 'center',
-                          gap: '8px'
-                        }}
-                        onMouseEnter={(e) => {
-                          if (!isSelected) {
-                            e.target.style.backgroundColor = '#f5f5f5';
-                          }
-                        }}
-                        onMouseLeave={(e) => {
-                          if (!isSelected) {
-                            e.target.style.backgroundColor = 'transparent';
-                          }
+                          gap: '12px',
+                          cursor: 'pointer',
+                          fontSize: '14px',
+                          fontFamily: 'Aeonik, sans-serif',
+                          color: brandTokens.colors.text
                         }}
                       >
-                        {isSelected && (
-                          <span style={{ fontSize: '12px' }}>✓</span>
-                        )}
-                        {option}
-                      </button>
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() => handleInterestedInToggle(option)}
+                          style={{
+                            width: '18px',
+                            height: '18px',
+                            cursor: 'pointer',
+                            accentColor: '#509E2E',
+                            flexShrink: 0
+                          }}
+                        />
+                        <span>{option}</span>
+                      </label>
                     );
                   })}
                 </div>
               </div>
 
               {/* Project Details Textarea */}
+              <div style={{
+                padding: '10px 0',
+                fontSize: '14px',
+                color: '#000000',
+                fontFamily: 'Aeonik, sans-serif',
+                marginTop: '32px',
+                marginBottom: '6px',
+                fontWeight: '400'
+              }}>
+                Tell us about your project
+              </div>
               <textarea
-                placeholder="Tell us about your project"
+                placeholder="Enter your message here..."
                 required
                 value={formData.projectDetails}
                 onChange={(e) => setFormData({ ...formData, projectDetails: e.target.value })}
                 rows={4}
                 style={{
-                  ...inputStyle,
+                  width: '100%',
+                  padding: '12px',
+                  marginBottom: '20px',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '6px',
+                  fontSize: '14px',
+                  fontFamily: 'Aeonik, sans-serif',
+                  boxSizing: 'border-box',
+                  outline: 'none',
+                  transition: 'border-color 0.2s',
+                  backgroundColor: 'transparent',
                   resize: 'vertical',
-                  minHeight: '100px',
-                  marginBottom: '20px'
+                  minHeight: '100px'
                 }}
-                onFocus={(e) => e.target.style.borderBottomColor = '#509E2E'}
-                onBlur={(e) => e.target.style.borderBottomColor = '#e5e7eb'}
+                onFocus={(e) => e.target.style.borderColor = '#509E2E'}
+                onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
               />
 
               {submitError && (
