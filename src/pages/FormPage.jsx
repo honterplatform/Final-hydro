@@ -122,7 +122,7 @@ const FormPage = () => {
       minHeight: '100vh',
       backgroundColor: brandTokens.colors.bg,
       fontFamily: brandTokens.font,
-      padding: '60px 20px',
+      padding: 0,
       boxSizing: 'border-box',
       display: 'flex',
       justifyContent: 'center',
@@ -131,10 +131,10 @@ const FormPage = () => {
       <div style={{
         maxWidth: '700px',
         width: '100%',
-        padding: '40px'
+        padding: 0
       }}>
         {submitSuccess ? (
-          <div style={{ textAlign: 'center', padding: '40px 20px' }}>
+          <div style={{ textAlign: 'center', padding: 0 }}>
             <h2 style={{ 
               color: '#509E2E', 
               marginBottom: '10px',
