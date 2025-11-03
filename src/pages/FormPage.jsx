@@ -6,7 +6,7 @@ const FormPage = () => {
 
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 640);
+      setIsMobile(window.innerWidth <= 390);
     };
     checkMobile();
     window.addEventListener('resize', checkMobile);
@@ -103,7 +103,7 @@ const FormPage = () => {
 
   const inputStyle = {
     width: '100%',
-    padding: '10px 0',
+    padding: 0,
     marginBottom: '16px',
     border: 'none',
     borderBottom: '1px solid #e5e7eb',
@@ -154,7 +154,7 @@ const FormPage = () => {
           </div>
         ) : (
           <>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} style={{ padding: 0, margin: 0 }}>
               {/* Row 1: First Name & Last Name */}
               <div style={{
                 display: 'grid',
@@ -245,7 +245,7 @@ const FormPage = () => {
               {/* Interested In Multi-Select */}
               <div style={{ marginBottom: '16px' }}>
                 <div style={{
-                  padding: '10px 0',
+                  padding: 0,
                   fontSize: '14px',
                   color: '#000000',
                   fontFamily: 'Aeonik, sans-serif',
@@ -268,7 +268,7 @@ const FormPage = () => {
                         onClick={() => handleInterestedInToggle(option)}
                         style={{
                           width: '100%',
-                          padding: '12px 16px',
+                          padding: 0,
                           textAlign: 'left',
                           backgroundColor: isSelected ? 'rgba(80, 158, 46, 0.2)' : 'transparent',
                           color: isSelected ? '#509E2E' : '#6b7280',
@@ -338,7 +338,7 @@ const FormPage = () => {
                 disabled={isSubmitting}
                 style={{
                   width: '100%',
-                  padding: '12px 16px',
+                  padding: 0,
                   backgroundColor: '#509E2E',
                   color: 'white',
                   border: 'none',
