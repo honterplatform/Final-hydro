@@ -103,7 +103,7 @@ const FormPage = () => {
 
   const inputStyle = {
     width: '100%',
-    padding: 0,
+    padding: '10px 0',
     marginBottom: '16px',
     border: 'none',
     borderBottom: '1px solid #e5e7eb',
@@ -134,7 +134,7 @@ const FormPage = () => {
         padding: 0
       }}>
         {submitSuccess ? (
-          <div style={{ textAlign: 'center', padding: 0 }}>
+          <div style={{ textAlign: 'center', padding: '20px 0' }}>
             <h2 style={{ 
               color: '#509E2E', 
               marginBottom: '10px',
@@ -245,7 +245,7 @@ const FormPage = () => {
               {/* Interested In Multi-Select */}
               <div style={{ marginBottom: '16px' }}>
                 <div style={{
-                  padding: 0,
+                  padding: '10px 0',
                   fontSize: '14px',
                   color: '#000000',
                   fontFamily: 'Aeonik, sans-serif',
@@ -268,7 +268,7 @@ const FormPage = () => {
                         onClick={() => handleInterestedInToggle(option)}
                         style={{
                           width: '100%',
-                          padding: 0,
+                          padding: '12px 16px',
                           textAlign: 'left',
                           backgroundColor: isSelected ? 'rgba(80, 158, 46, 0.2)' : 'transparent',
                           color: isSelected ? '#509E2E' : '#6b7280',
@@ -338,7 +338,7 @@ const FormPage = () => {
                 disabled={isSubmitting}
                 style={{
                   width: '100%',
-                  padding: 0,
+                  padding: '12px 16px',
                   backgroundColor: '#509E2E',
                   color: 'white',
                   border: 'none',
