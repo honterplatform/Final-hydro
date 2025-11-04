@@ -277,11 +277,11 @@ export const LeadForm = ({ rep, onClose, visible }) => {
                 rows={4}
                 style={{
                   width: '100%',
-                  padding: '10px 0',
+                  padding: '12px',
+                  marginTop: '16px',
                   marginBottom: '20px',
-                  border: 'none',
-                  borderBottom: '1px solid #e5e7eb',
-                  borderRadius: '0',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '6px',
                   fontSize: '14px',
                   fontFamily: 'Aeonik, sans-serif',
                   boxSizing: 'border-box',
@@ -291,8 +291,8 @@ export const LeadForm = ({ rep, onClose, visible }) => {
                   resize: 'vertical',
                   minHeight: '80px'
                 }}
-                onFocus={(e) => e.target.style.borderBottomColor = '#509E2E'}
-                onBlur={(e) => e.target.style.borderBottomColor = '#e5e7eb'}
+                onFocus={(e) => e.target.style.borderColor = '#509E2E'}
+                onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
               />
 
               {submitError && (
