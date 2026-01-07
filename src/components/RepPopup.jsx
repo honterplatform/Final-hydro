@@ -283,19 +283,19 @@ const RepPopup = ({ visible, x, y, reps, stateName, selectedCode, onClose, onRep
                                </span>
                              </div>
                            )}
-                          <div>
-                            <h4 style={{
-                              fontSize: isMobile ? '14px' : '16px',
-                              fontWeight: '400',
-                              margin: '0 0 2px 0',
-                              color: brandTokens.colors.text,
-                            }}>
-                              {individualName}
-                            </h4>
-                            <p style={{
-                              fontSize: isMobile ? '11px' : '12px',
-                              color: '#6b7280',
-                              margin: 0,
+                           <div>
+                             <h4 style={{
+                               fontSize: isMobile ? '14px' : '16px',
+                               fontWeight: '400',
+                               margin: '0 0 2px 0',
+                               color: brandTokens.colors.text,
+                             }}>
+                               {individualName}
+                             </h4>
+                               <p style={{
+                                 fontSize: isMobile ? '11px' : '12px',
+                                 color: '#6b7280',
+                                 margin: 0,
                             }}>
                               {repData.phone || 'No phone available'}
                             </p>
@@ -315,27 +315,27 @@ const RepPopup = ({ visible, x, y, reps, stateName, selectedCode, onClose, onRep
                                 fontSize: isMobile ? '11px' : '12px',
                                 color: '#6b7280',
                                 margin: '2px 0 0 0',
-                              }}>
-                                Also available in {otherStates.join(', ')}
-                              </p>
-                            )}
-                          </div>
-                        </div>
+                               }}>
+                                 Also available in {otherStates.join(', ')}
+                               </p>
+                             )}
+                           </div>
+                         </div>
                         <button
                           onClick={() => handleLetsTalkClick(repData)}
-                          style={{
-                            background: brandTokens.colors.selected,
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '6px',
-                            padding: isMobile ? '6px 12px' : '8px 16px',
-                            fontSize: isMobile ? '12px' : '14px',
-                            fontWeight: '400',
-                            cursor: 'pointer',
-                            marginLeft: isMobile ? '8px' : '12px',
-                          }}
-                        >
-                          Let's Talk
+                           style={{
+                             background: brandTokens.colors.selected,
+                             color: 'white',
+                             border: 'none',
+                             borderRadius: '6px',
+                             padding: isMobile ? '6px 12px' : '8px 16px',
+                             fontSize: isMobile ? '12px' : '14px',
+                             fontWeight: '400',
+                             cursor: 'pointer',
+                             marginLeft: isMobile ? '8px' : '12px',
+                           }}
+                  >
+                    Let's Talk
                         </button>
                 </div>
               </div>

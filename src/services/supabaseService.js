@@ -61,7 +61,8 @@ export const createRepresentative = async (repData) => {
       webhook: repData.webhook || '',
       color: repData.color || '',
       territory: repData.territory || '',
-      region: repData.region || null
+      region: repData.region || null,
+      show_in_grid: repData.showInGrid !== undefined ? repData.showInGrid : true
     };
 
     const { data, error } = await supabase
@@ -95,7 +96,8 @@ export const updateRepresentative = async (id, repData) => {
       webhook: repData.webhook || '',
       color: repData.color || '',
       territory: repData.territory || '',
-      region: repData.region || null
+      region: repData.region || null,
+      show_in_grid: repData.showInGrid !== undefined ? repData.showInGrid : true
     };
 
     const { data, error } = await supabase

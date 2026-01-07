@@ -15,7 +15,8 @@ const AdminPanel = ({ onClose }) => {
     webhook: '',
     color: '',
     territory: '',
-    region: ''
+    region: '',
+    showInGrid: true
   });
 
   // Load reps from API on component mount and set up real-time subscriptions
@@ -135,7 +136,8 @@ const AdminPanel = ({ onClose }) => {
         webhook: formData.webhook.trim() || null,
         color: formData.color.trim() || null,
         territory: formData.territory.trim() || null,
-        region: formData.region.trim() || null
+        region: formData.region.trim() || null,
+        showInGrid: formData.showInGrid
       };
 
       if (editingRep !== null) {
@@ -149,7 +151,7 @@ const AdminPanel = ({ onClose }) => {
       }
 
       // Reset form
-      setFormData({ rep: '', states: [], profileImage: '', email: '', phone: '', webhook: '', color: '', territory: '', region: '' });
+      setFormData({ rep: '', states: [], profileImage: '', email: '', phone: '', webhook: '', color: '', territory: '', region: '', showInGrid: true });
       setEditingRep(null);
     } catch (error) {
       console.error('Error saving representative:', error);
@@ -168,7 +170,8 @@ const AdminPanel = ({ onClose }) => {
       webhook: rep.webhook || '',
       color: rep.color || '',
       territory: rep.territory || '',
-      region: rep.region || ''
+      region: rep.region || '',
+      showInGrid: rep.showInGrid !== undefined ? rep.showInGrid : (rep.show_in_grid !== undefined ? rep.show_in_grid : true)
     });
     setEditingRep(index);
   };
@@ -186,7 +189,7 @@ const AdminPanel = ({ onClose }) => {
   };
 
   const handleCancel = () => {
-    setFormData({ rep: '', states: [], profileImage: '', email: '', phone: '', webhook: '', color: '', territory: '', region: '' });
+    setFormData({ rep: '', states: [], profileImage: '', email: '', phone: '', webhook: '', color: '', territory: '', region: '', showInGrid: true });
     setEditingRep(null);
   };
 
@@ -588,6 +591,33 @@ const AdminPanel = ({ onClose }) => {
           />
         </div>
 
+        {/* Show in Grid Checkbox */}
+        <div style={{ marginBottom: '16px' }}>
+          <label style={{
+            display: 'flex',
+            alignItems: 'center',
+            cursor: 'pointer',
+            fontSize: '14px',
+            fontWeight: '400',
+            color: brandTokens.colors.text,
+          }}>
+            <input
+              type="checkbox"
+              checked={formData.showInGrid}
+              onChange={(e) => handleInputChange('showInGrid', e.target.checked)}
+              style={{ marginRight: '8px' }}
+            />
+            Show in Rep Grid
+          </label>
+          <p style={{
+            margin: '4px 0 0 0',
+            fontSize: '11px',
+            color: '#6b7280',
+          }}>
+            Uncheck to hide this rep from the grid (will still appear on map)
+          </p>
+        </div>
+
         <div style={{ marginBottom: '16px' }}>
           <label style={{
             display: 'block',
@@ -807,13 +837,13 @@ const AdminPanel = ({ onClose }) => {
                   </p>
                 )}
                 {rep.region && (
-                  <p style={{
+                <p style={{
                     margin: '2px 0 0 0',
-                    fontSize: '11px',
-                    color: '#9ca3af',
-                  }}>
+                  fontSize: '11px',
+                  color: '#9ca3af',
+                }}>
                     Region: {rep.region}
-                  </p>
+                </p>
                 )}
                 </div>
               </div>

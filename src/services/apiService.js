@@ -17,8 +17,8 @@ export const getReps = async () => {
   } catch (error) {
     console.error('Supabase error, falling back to local data:', error);
     try {
-      const { reps } = await import('../data/reps.js');
-      return reps;
+    const { reps } = await import('../data/reps.js');
+    return reps;
     } catch (fallbackError) {
       console.error('Error loading local data:', fallbackError);
       return [];
