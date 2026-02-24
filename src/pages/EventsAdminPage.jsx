@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import EventsAdminPanel from '../components/events/EventsAdminPanel';
 import brandTokens from '../brandTokens';
 
@@ -19,7 +18,6 @@ const EventsAdminPage = () => {
         borderBottom: `1px solid ${brandTokens.colors.border}`,
         padding: '16px 20px',
         display: 'flex',
-        justifyContent: 'space-between',
         alignItems: 'center',
         boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
       }}>
@@ -31,25 +29,6 @@ const EventsAdminPage = () => {
         }}>
           Events Admin
         </h1>
-        <Link
-          to="/events"
-          style={{
-            background: brandTokens.colors.selected,
-            color: 'white',
-            border: 'none',
-            borderRadius: '6px',
-            padding: '8px 16px',
-            fontSize: '14px',
-            fontWeight: '400',
-            cursor: 'pointer',
-            textDecoration: 'none',
-            transition: 'background-color 160ms ease',
-          }}
-          onMouseEnter={(e) => e.target.style.backgroundColor = '#15803d'}
-          onMouseLeave={(e) => e.target.style.backgroundColor = brandTokens.colors.selected}
-        >
-          ← Back to Events
-        </Link>
       </div>
 
       {/* Content */}
