@@ -16,7 +16,6 @@ const EventsListPage = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [view, setView] = useState('list');
   const [isMobile, setIsMobile] = useState(false);
-  const [horizontalPadding, setHorizontalPadding] = useState('120px');
 
   const loadEvents = async () => {
     const data = await fetchPublishedEvents();
@@ -48,12 +47,7 @@ const EventsListPage = () => {
 
   useEffect(() => {
     const checkScreenSize = () => {
-      const width = window.innerWidth;
-      setIsMobile(width < 768);
-      if (width >= 1440) setHorizontalPadding('120px');
-      else if (width >= 1024) setHorizontalPadding('90px');
-      else if (width >= 768) setHorizontalPadding('40px');
-      else setHorizontalPadding('20px');
+      setIsMobile(window.innerWidth < 768);
     };
     checkScreenSize();
     window.addEventListener('resize', checkScreenSize);
@@ -106,7 +100,7 @@ const EventsListPage = () => {
       padding: 0,
       boxSizing: 'border-box',
     }}>
-      <div style={{ padding: `40px ${horizontalPadding} 60px ${horizontalPadding}` }}>
+      <div style={{ padding: '40px 0 60px 0' }}>
         {/* Header */}
         <div style={{
           display: 'flex',

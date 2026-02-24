@@ -13,7 +13,6 @@ const EventDetailPage = () => {
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [isMobile, setIsMobile] = useState(false);
-  const [horizontalPadding, setHorizontalPadding] = useState('120px');
 
   useEffect(() => {
     const load = async () => {
@@ -43,12 +42,7 @@ const EventDetailPage = () => {
 
   useEffect(() => {
     const checkScreenSize = () => {
-      const width = window.innerWidth;
-      setIsMobile(width < 768);
-      if (width >= 1440) setHorizontalPadding('120px');
-      else if (width >= 1024) setHorizontalPadding('90px');
-      else if (width >= 768) setHorizontalPadding('40px');
-      else setHorizontalPadding('20px');
+      setIsMobile(window.innerWidth < 768);
     };
     checkScreenSize();
     window.addEventListener('resize', checkScreenSize);
@@ -203,7 +197,7 @@ const EventDetailPage = () => {
       padding: 0,
       boxSizing: 'border-box',
     }}>
-      <div style={{ padding: `40px ${horizontalPadding} 60px ${horizontalPadding}` }}>
+      <div style={{ padding: '40px 0 60px 0' }}>
         {/* Back link */}
         <Link to="/events" style={{
           color: brandTokens.colors.selected,
