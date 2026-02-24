@@ -100,7 +100,7 @@ const EventsListPage = () => {
       padding: 0,
       boxSizing: 'border-box',
     }}>
-      <div style={{ padding: '40px 0 60px 0' }}>
+      <div style={{ padding: 0 }}>
         {/* Header */}
         <div style={{
           display: 'flex',

@@ -197,7 +197,7 @@ const EventDetailPage = () => {
       padding: 0,
       boxSizing: 'border-box',
     }}>
-      <div style={{ padding: '40px 0 60px 0' }}>
+      <div style={{ padding: 0 }}>
         {/* Back link */}
         <Link to="/events" style={{
           color: brandTokens.colors.selected,
