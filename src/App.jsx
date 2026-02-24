@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MapPage from './pages/MapPage';
 import RepGridPage from './pages/RepGridPage';
@@ -9,6 +10,19 @@ import EventsAdminPage from './pages/EventsAdminPage';
 import EventDetailPage from './pages/EventDetailPage';
 
 function App() {
+  // Auto-resize when embedded in an iframe (e.g. Framer)
+  useEffect(() => {
+    if (window.parent === window) return;
+    const sendHeight = () => {
+      const height = document.documentElement.scrollHeight;
+      window.parent.postMessage({ type: 'resize', height }, '*');
+    };
+    const observer = new ResizeObserver(sendHeight);
+    observer.observe(document.body);
+    sendHeight();
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <Router>
       <Routes>

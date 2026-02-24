@@ -99,7 +99,7 @@ const EventsListPage = () => {
   return (
     <div style={{
       width: '100%',
-      minHeight: '100vh',
+      minHeight: window.parent !== window ? 'auto' : '100vh',
       backgroundColor: brandTokens.colors.bg,
       fontFamily: brandTokens.font,
       margin: 0,
