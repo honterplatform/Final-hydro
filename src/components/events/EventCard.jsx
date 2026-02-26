@@ -182,20 +182,9 @@ const EventCard = ({ event, signupCount = 0, onClick }) => {
         padding: '12px 16px',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-start',
         borderRadius: '0 0 12px 12px',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#509E2E" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-            <circle cx="9" cy="7" r="4" />
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-          </svg>
-          <span style={{ fontSize: '12px', color: '#509E2E' }}>
-            {signupCount} {event.capacity ? `/ ${event.capacity}` : ''} attending
-          </span>
-        </div>
         {!isPast && event.signupEnabled && event.status === 'published' && !(event.capacity && signupCount >= event.capacity) ? (
           <span style={{
             fontSize: '12px',
