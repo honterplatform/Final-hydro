@@ -32,6 +32,8 @@ function App() {
         <Route path="/form" element={<FormPage />} />
         <Route path="/simple-form" element={<SimpleFormPage />} />
         <Route path="/events" element={<EventsListPage />} />
+        <Route path="/events/exterior" element={<EventsListPage section="exterior" />} />
+        <Route path="/events/showers" element={<EventsListPage section="showers" />} />
         <Route path="/events/admin" element={<EventsAdminPage />} />
         <Route path="/events/:id" element={<EventDetailPage />} />
       </Routes>

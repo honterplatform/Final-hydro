@@ -24,7 +24,9 @@ const emptyForm = {
   eventTime: '',
   location: '',
   category: 'general',
+  section: '',
   capacity: '',
+  notificationEmails: '',
   signupEnabled: true,
   status: 'draft',
 };
@@ -114,6 +116,7 @@ const EventsAdminPanel = () => {
       setFormData((prev) => ({ ...prev, coverImage: e.target.result }));
     };
     reader.readAsDataURL(file);
+    event.target.value = '';
   };
 
   const handleSubmit = async (e) => {
@@ -132,7 +135,9 @@ const EventsAdminPanel = () => {
         eventTime: formData.eventTime || null,
         location: formData.location.trim() || null,
         category: formData.category,
+        section: formData.section || null,
         capacity: formData.capacity ? Number(formData.capacity) : null,
+        notificationEmails: formData.notificationEmails.trim() || null,
         signupEnabled: formData.signupEnabled,
         status: formData.status,
       };
@@ -162,7 +167,9 @@ const EventsAdminPanel = () => {
       eventTime: ev.eventTime || '',
       location: ev.location || '',
       category: ev.category || 'general',
+      section: ev.section || '',
       capacity: ev.capacity || '',
+      notificationEmails: ev.notificationEmails || '',
       signupEnabled: ev.signupEnabled !== undefined ? ev.signupEnabled : true,
       status: ev.status || 'draft',
     });
@@ -332,14 +339,22 @@ const EventsAdminPanel = () => {
               <input type="text" value={formData.location} onChange={(e) => handleInputChange('location', e.target.value)} placeholder="e.g., Convention Center, Room 201" style={fieldInputStyle} onFocus={(e) => (e.target.style.borderColor = brandTokens.colors.selected)} onBlur={(e) => (e.target.style.borderColor = brandTokens.colors.border)} />
             </div>
 
-            {/* Category + Status */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px' }}>
+            {/* Category + Section + Status */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', marginBottom: '16px' }}>
               <div>
                 <label style={labelStyle}>Category</label>
                 <select value={formData.category} onChange={(e) => handleInputChange('category', e.target.value)} style={fieldInputStyle}>
                   {categories.map((cat) => (
                     <option key={cat.value} value={cat.value}>{cat.label}</option>
                   ))}
+                </select>
+              </div>
+              <div>
+                <label style={labelStyle}>Section</label>
+                <select value={formData.section} onChange={(e) => handleInputChange('section', e.target.value)} style={fieldInputStyle}>
+                  <option value="">None</option>
+                  <option value="exterior">Exterior</option>
+                  <option value="showers">Showers</option>
                 </select>
               </div>
               <div>
@@ -355,6 +370,13 @@ const EventsAdminPanel = () => {
             <div style={{ marginBottom: '16px' }}>
               <label style={labelStyle}>Capacity</label>
               <input type="number" value={formData.capacity} onChange={(e) => handleInputChange('capacity', e.target.value)} placeholder="Leave empty for unlimited" min="1" style={fieldInputStyle} onFocus={(e) => (e.target.style.borderColor = brandTokens.colors.selected)} onBlur={(e) => (e.target.style.borderColor = brandTokens.colors.border)} />
+            </div>
+
+            {/* Notification Emails */}
+            <div style={{ marginBottom: '16px' }}>
+              <label style={labelStyle}>Notification Emails</label>
+              <input type="text" value={formData.notificationEmails} onChange={(e) => handleInputChange('notificationEmails', e.target.value)} placeholder="Comma-separated emails, e.g. john@example.com, jane@example.com" style={fieldInputStyle} onFocus={(e) => (e.target.style.borderColor = brandTokens.colors.selected)} onBlur={(e) => (e.target.style.borderColor = brandTokens.colors.border)} />
+              <p style={{ margin: '4px 0 0 0', fontSize: '11px', color: '#9ca3af' }}>These emails will be notified when someone signs up for this event.</p>
             </div>
 
             {/* Signup Enabled */}
@@ -395,6 +417,7 @@ const EventsAdminPanel = () => {
                       {new Date(ev.eventDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                       {ev.eventTime && ` at ${new Date('2000-01-01T' + ev.eventTime).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`}
                       {' · '}{ev.category.replace('-', ' ')}
+                      {ev.section && ` · ${ev.section}`}
                       {' · '}{signupCounts[ev.id] || 0} signups
                     </p>
                   </div>

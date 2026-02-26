@@ -13,6 +13,8 @@ const transformEventFromDB = (row) => ({
   capacity: row.capacity,
   signupEnabled: row.signup_enabled,
   status: row.status,
+  section: row.section || null,
+  notificationEmails: row.notification_emails || null,
   createdAt: row.created_at,
   updatedAt: row.updated_at,
 });
@@ -29,6 +31,8 @@ const transformEventToDB = (data) => ({
   capacity: data.capacity || null,
   signup_enabled: data.signupEnabled !== undefined ? data.signupEnabled : true,
   status: data.status || 'draft',
+  section: data.section || null,
+  notification_emails: data.notificationEmails || null,
 });
 
 const transformSignupFromDB = (row) => ({

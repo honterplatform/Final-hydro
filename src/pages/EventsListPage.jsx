@@ -6,7 +6,7 @@ import EventFilters from '../components/events/EventFilters';
 import EventCalendar from '../components/events/EventCalendar';
 import { fetchPublishedEvents, fetchSignupCount, fetchCategories, subscribeToEventsUpdates } from '../services/eventsApiService';
 
-const EventsListPage = () => {
+const EventsListPage = ({ section }) => {
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [signupCounts, setSignupCounts] = useState({});
@@ -61,6 +61,8 @@ const EventsListPage = () => {
 
   const filteredEvents = useMemo(() => {
     return events.filter((event) => {
+      // Filter by section if provided
+      if (section && event.section !== section) return false;
       // Hide past events unless toggled on
       if (!filters.showPast && event.eventDate < todayStr) return false;
       if (selectedDate && event.eventDate !== selectedDate) return false;
@@ -75,7 +77,7 @@ const EventsListPage = () => {
       }
       return true;
     });
-  }, [events, filters, selectedDate, todayStr]);
+  }, [events, filters, selectedDate, todayStr, section]);
 
   const toggleBtnStyle = (active) => ({
     padding: '6px 16px',
@@ -116,7 +118,7 @@ const EventsListPage = () => {
             fontWeight: '400',
             color: brandTokens.colors.text,
           }}>
-            {filters.showPast ? 'All Events' : 'Upcoming Events'}
+            {filters.showPast ? 'All Events' : 'Upcoming Events'}{section ? ` — ${section.charAt(0).toUpperCase() + section.slice(1)}` : ''}
           </h1>
           <div style={{
             display: 'flex',

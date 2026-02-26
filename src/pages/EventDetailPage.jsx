@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import brandTokens from '../brandTokens';
+import { supabase } from '../services/supabaseService';
 import { fetchEventById, fetchSignupCount, subscribeToSignupsUpdates, addSignup } from '../services/eventsApiService';
 
 const EventDetailPage = () => {
@@ -199,7 +200,7 @@ const EventDetailPage = () => {
     }}>
       <div style={{ padding: 0 }}>
         {/* Back link */}
-        <Link to="/events" style={{
+        <Link to={event.section ? `/events/${event.section}` : '/events'} style={{
           color: brandTokens.colors.selected,
           textDecoration: 'none',
           fontSize: '14px',
@@ -431,16 +432,23 @@ const EventDetailPage = () => {
                       setIsSubmitting(true);
                       setSubmitError('');
                       try {
-                        await addSignup({
+                        const signupData = {
                           eventId: event.id,
                           firstName: signupForm.firstName,
                           lastName: signupForm.lastName,
                           email: signupForm.email,
                           phone: signupForm.phone,
-                        });
+                        };
+                        await addSignup(signupData);
                         setSubmitSuccess(true);
                         setSignupCount((prev) => prev + 1);
                         setSignupForm({ firstName: '', lastName: '', email: '', phone: '' });
+                        // Fire-and-forget notification email
+                        if (event.notificationEmails) {
+                          supabase.functions.invoke('send-signup-notification', {
+                            body: signupData,
+                          }).catch(() => {});
+                        }
                       } catch (error) {
                         setSubmitError(error.message || 'Something went wrong. Please try again.');
                       }
