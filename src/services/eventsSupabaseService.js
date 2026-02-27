@@ -1,5 +1,30 @@
 import { supabase } from './supabaseService.js';
 
+// ============================================================
+// IMAGE STORAGE
+// ============================================================
+
+export const uploadEventImage = async (file) => {
+  const ext = file.name.split('.').pop();
+  const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+  const { error } = await supabase.storage
+    .from('event-images')
+    .upload(fileName, file, { cacheControl: '31536000', upsert: false });
+  if (error) throw error;
+  const { data: urlData } = supabase.storage
+    .from('event-images')
+    .getPublicUrl(fileName);
+  return urlData.publicUrl;
+};
+
+export const deleteEventImage = async (url) => {
+  if (!url || url.startsWith('data:')) return;
+  const parts = url.split('/event-images/');
+  if (parts.length < 2) return;
+  const fileName = parts[1];
+  await supabase.storage.from('event-images').remove([fileName]);
+};
+
 // DB (snake_case) -> JS (camelCase)
 const transformEventFromDB = (row) => ({
   id: row.id,

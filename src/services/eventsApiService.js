@@ -10,6 +10,8 @@ import {
   getAllSignups,
   getSignupCount,
   getAllSignupCounts,
+  uploadEventImage,
+  deleteEventImage,
   createSignup,
   deleteSignup,
   getCategories,
@@ -42,6 +44,8 @@ export const fetchPublishedEvents = async () => {
     return [];
   }
 };
+
+export { uploadEventImage, deleteEventImage };
 
 export const fetchEventById = async (id) => {
   try {

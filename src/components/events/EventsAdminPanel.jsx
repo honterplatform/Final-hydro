@@ -14,6 +14,8 @@ import {
   addCategory,
   editCategory,
   removeCategory,
+  uploadEventImage,
+  deleteEventImage,
 } from '../../services/eventsApiService';
 
 const emptyForm = {
@@ -100,23 +102,30 @@ const EventsAdminPanel = () => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleImageUpload = (event) => {
+  const [imageUploading, setImageUploading] = useState(false);
+
+  const handleImageUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
     if (!file.type.startsWith('image/')) {
       alert('Please select an image file.');
       return;
     }
-    if (file.size > 2 * 1024 * 1024) {
-      alert('Image size must be less than 2MB.');
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Image size must be less than 5MB.');
       return;
     }
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      setFormData((prev) => ({ ...prev, coverImage: e.target.result }));
-    };
-    reader.readAsDataURL(file);
     event.target.value = '';
+    setImageUploading(true);
+    try {
+      const url = await uploadEventImage(file);
+      setFormData((prev) => ({ ...prev, coverImage: url }));
+    } catch (err) {
+      console.error('Image upload failed:', err);
+      alert('Failed to upload image. Please try again.');
+    } finally {
+      setImageUploading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -312,10 +321,14 @@ const EventsAdminPanel = () => {
                     <button type="button" onClick={() => handleInputChange('coverImage', '')} style={{ background: '#dc2626', color: 'white', border: 'none', borderRadius: '4px', padding: '2px 6px', fontSize: '11px', cursor: 'pointer' }}>Remove</button>
                   </div>
                 </div>
+              ) : imageUploading ? (
+                <div style={{ border: `1px dashed ${brandTokens.colors.border}`, borderRadius: '6px', padding: '16px', textAlign: 'center', backgroundColor: brandTokens.colors.card }}>
+                  <p style={{ margin: 0, fontSize: '12px', color: brandTokens.colors.text }}>Uploading image...</p>
+                </div>
               ) : (
                 <div style={{ border: `1px dashed ${brandTokens.colors.border}`, borderRadius: '6px', padding: '16px', textAlign: 'center', backgroundColor: brandTokens.colors.card, cursor: 'pointer', transition: 'border-color 160ms ease' }} onClick={() => document.getElementById('eventImageUpload').click()} onMouseEnter={(e) => (e.currentTarget.style.borderColor = brandTokens.colors.selected)} onMouseLeave={(e) => (e.currentTarget.style.borderColor = brandTokens.colors.border)}>
                   <p style={{ margin: '0 0 2px 0', fontSize: '12px', color: brandTokens.colors.text }}>Click to upload cover image</p>
-                  <p style={{ margin: 0, fontSize: '11px', color: '#6b7280' }}>PNG, JPG up to 2MB</p>
+                  <p style={{ margin: 0, fontSize: '11px', color: '#6b7280' }}>PNG, JPG up to 5MB</p>
                 </div>
               )}
               <input id="eventImageUpload" type="file" accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} />
