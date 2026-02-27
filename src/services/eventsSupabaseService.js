@@ -214,6 +214,23 @@ export const getSignupCount = async (eventId) => {
   }
 };
 
+export const getAllSignupCounts = async () => {
+  try {
+    const { data, error } = await supabase
+      .from('event_signups')
+      .select('event_id');
+    if (error) throw error;
+    const counts = {};
+    (data || []).forEach((row) => {
+      counts[row.event_id] = (counts[row.event_id] || 0) + 1;
+    });
+    return counts;
+  } catch (error) {
+    console.error('Error getting all signup counts:', error);
+    throw error;
+  }
+};
+
 export const createSignup = async (signupData) => {
   try {
     const { data, error } = await supabase

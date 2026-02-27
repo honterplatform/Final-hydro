@@ -9,6 +9,7 @@ import {
   getSignupsForEvent,
   getAllSignups,
   getSignupCount,
+  getAllSignupCounts,
   createSignup,
   deleteSignup,
   getCategories,
@@ -115,6 +116,15 @@ export const fetchSignupCount = async (eventId) => {
   } catch (error) {
     console.error('Error fetching signup count:', error);
     return 0;
+  }
+};
+
+export const fetchAllSignupCounts = async () => {
+  try {
+    return await getAllSignupCounts();
+  } catch (error) {
+    console.error('Error fetching all signup counts:', error);
+    return {};
   }
 };
 

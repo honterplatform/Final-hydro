@@ -4,7 +4,7 @@ import brandTokens from '../brandTokens';
 import EventCard from '../components/events/EventCard';
 import EventFilters from '../components/events/EventFilters';
 import EventCalendar from '../components/events/EventCalendar';
-import { fetchPublishedEvents, fetchSignupCount, fetchCategories, subscribeToEventsUpdates } from '../services/eventsApiService';
+import { fetchPublishedEvents, fetchAllSignupCounts, fetchCategories, subscribeToEventsUpdates } from '../services/eventsApiService';
 
 const EventsListPage = ({ section }) => {
   const navigate = useNavigate();
@@ -18,14 +18,11 @@ const EventsListPage = ({ section }) => {
   const [isMobile, setIsMobile] = useState(false);
 
   const loadEvents = async () => {
-    const data = await fetchPublishedEvents();
+    const [data, counts] = await Promise.all([
+      fetchPublishedEvents(),
+      fetchAllSignupCounts(),
+    ]);
     setEvents(data);
-    const counts = {};
-    await Promise.all(
-      data.map(async (ev) => {
-        counts[ev.id] = await fetchSignupCount(ev.id);
-      })
-    );
     setSignupCounts(counts);
     setLoading(false);
   };
