@@ -30,6 +30,7 @@ const emptyForm = {
   capacity: '',
   notificationEmails: '',
   signupEnabled: true,
+  showTileShopId: false,
   status: 'draft',
 };
 
@@ -148,6 +149,7 @@ const EventsAdminPanel = () => {
         capacity: formData.capacity ? Number(formData.capacity) : null,
         notificationEmails: formData.notificationEmails.trim() || null,
         signupEnabled: formData.signupEnabled,
+        showTileShopId: formData.showTileShopId,
         status: formData.status,
       };
 
@@ -180,6 +182,7 @@ const EventsAdminPanel = () => {
       capacity: ev.capacity || '',
       notificationEmails: ev.notificationEmails || '',
       signupEnabled: ev.signupEnabled !== undefined ? ev.signupEnabled : true,
+      showTileShopId: ev.showTileShopId || false,
       status: ev.status || 'draft',
     });
     setEditingIndex(index);
@@ -211,8 +214,18 @@ const EventsAdminPanel = () => {
   const exportCSV = () => {
     if (signups.length === 0) return;
     const eventTitle = events?.find((e) => e.id === Number(selectedEventForSignups))?.title || 'event';
-    const headers = ['First Name', 'Last Name', 'Email', 'Phone', 'Signed Up At'];
-    const rows = signups.map((s) => [s.firstName, s.lastName, s.email, s.phone || '', s.signedUpAt || '']);
+    const headers = ['First Name', 'Last Name', 'Email', 'Phone', 'Company', 'Guests', 'Tile Shop Customer ID', 'Special Requirements', 'Signed Up At'];
+    const rows = signups.map((s) => [
+      s.firstName,
+      s.lastName,
+      s.email,
+      s.phone || '',
+      s.companyName || '',
+      s.guests ?? '',
+      s.tileShopCustomerId || '',
+      s.specialRequirements || '',
+      s.signedUpAt || '',
+    ]);
     const csv = [headers, ...rows]
       .map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(','))
       .join('\n');
@@ -400,6 +413,14 @@ const EventsAdminPanel = () => {
               </label>
             </div>
 
+            {/* Show Tile Shop Customer ID field */}
+            <div style={{ marginBottom: '16px' }}>
+              <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', fontSize: '14px', fontWeight: '400', color: brandTokens.colors.text }}>
+                <input type="checkbox" checked={formData.showTileShopId} onChange={(e) => handleInputChange('showTileShopId', e.target.checked)} style={{ marginRight: '8px' }} />
+                Ask for Tile Shop Customer ID on signup
+              </label>
+            </div>
+
             {/* Submit */}
             <div style={{ display: 'flex', gap: '10px' }}>
               <button type="submit" style={{ background: brandTokens.colors.selected, color: 'white', border: 'none', borderRadius: '6px', padding: '8px 16px', fontSize: '14px', fontWeight: '400', cursor: 'pointer', transition: 'background-color 160ms ease' }} onMouseEnter={(e) => (e.target.style.backgroundColor = '#15803d')} onMouseLeave={(e) => (e.target.style.backgroundColor = brandTokens.colors.selected)}>
@@ -482,22 +503,38 @@ const EventsAdminPanel = () => {
               ) : (
                 <div style={{ border: `1px solid ${brandTokens.colors.border}`, borderRadius: '6px', overflow: 'hidden' }}>
                   {/* Table header */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1.5fr 1fr 80px', padding: '10px 16px', backgroundColor: brandTokens.colors.card, fontSize: '12px', fontWeight: '500', color: '#6b7280', borderBottom: `1px solid ${brandTokens.colors.border}` }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1.2fr 1fr 1fr 80px', padding: '10px 16px', backgroundColor: brandTokens.colors.card, fontSize: '12px', fontWeight: '500', color: '#6b7280', borderBottom: `1px solid ${brandTokens.colors.border}` }}>
                     <span>Name</span>
                     <span>Email</span>
                     <span>Phone</span>
+                    <span>Company</span>
                     <span>Date</span>
                     <span></span>
                   </div>
-                  {signups.map((s) => (
-                    <div key={s.id} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1.5fr 1fr 80px', padding: '10px 16px', borderBottom: `1px solid ${brandTokens.colors.border}`, fontSize: '13px', color: brandTokens.colors.text, backgroundColor: 'white', alignItems: 'center' }}>
-                      <span>{s.firstName} {s.lastName}</span>
-                      <span style={{ color: '#6b7280', overflow: 'hidden', textOverflow: 'ellipsis' }}>{s.email}</span>
-                      <span style={{ color: '#6b7280' }}>{s.phone || '-'}</span>
-                      <span style={{ color: '#6b7280' }}>{s.signedUpAt ? new Date(s.signedUpAt).toLocaleDateString() : '-'}</span>
-                      <button onClick={() => handleDeleteSignup(s.id)} style={{ background: '#dc2626', color: 'white', border: 'none', borderRadius: '4px', padding: '3px 6px', fontSize: '11px', cursor: 'pointer', justifySelf: 'end' }}>Remove</button>
-                    </div>
-                  ))}
+                  {signups.map((s) => {
+                    const extras = [
+                      s.guests != null && s.guests !== '' ? `${s.guests} guest${s.guests === 1 ? '' : 's'}` : null,
+                      s.tileShopCustomerId ? `Tile Shop ID: ${s.tileShopCustomerId}` : null,
+                      s.specialRequirements ? `Requirements: ${s.specialRequirements}` : null,
+                    ].filter(Boolean);
+                    return (
+                      <div key={s.id} style={{ borderBottom: `1px solid ${brandTokens.colors.border}`, backgroundColor: 'white' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1.2fr 1fr 1fr 80px', padding: '10px 16px', fontSize: '13px', color: brandTokens.colors.text, alignItems: 'center' }}>
+                          <span>{s.firstName} {s.lastName}</span>
+                          <span style={{ color: '#6b7280', overflow: 'hidden', textOverflow: 'ellipsis' }}>{s.email}</span>
+                          <span style={{ color: '#6b7280' }}>{s.phone || '-'}</span>
+                          <span style={{ color: '#6b7280' }}>{s.companyName || '-'}</span>
+                          <span style={{ color: '#6b7280' }}>{s.signedUpAt ? new Date(s.signedUpAt).toLocaleDateString() : '-'}</span>
+                          <button onClick={() => handleDeleteSignup(s.id)} style={{ background: '#dc2626', color: 'white', border: 'none', borderRadius: '4px', padding: '3px 6px', fontSize: '11px', cursor: 'pointer', justifySelf: 'end' }}>Remove</button>
+                        </div>
+                        {extras.length > 0 && (
+                          <div style={{ padding: '0 16px 10px 16px', fontSize: '12px', color: '#9ca3af', display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+                            {extras.map((x, i) => <span key={i}>{x}</span>)}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </>

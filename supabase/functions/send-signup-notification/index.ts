@@ -13,7 +13,17 @@ serve(async (req) => {
   }
 
   try {
-    const { eventId, firstName, lastName, email, phone } = await req.json();
+    const {
+      eventId,
+      firstName,
+      lastName,
+      email,
+      phone,
+      companyName,
+      guests,
+      tileShopCustomerId,
+      specialRequirements,
+    } = await req.json();
 
     if (!eventId) {
       return new Response(JSON.stringify({ error: 'eventId is required' }), {
@@ -87,6 +97,10 @@ serve(async (req) => {
           <p style="margin: 4px 0; font-size: 14px;"><strong>Name:</strong> ${firstName} ${lastName}</p>
           <p style="margin: 4px 0; font-size: 14px;"><strong>Email:</strong> ${email}</p>
           ${phone ? `<p style="margin: 4px 0; font-size: 14px;"><strong>Phone:</strong> ${phone}</p>` : ''}
+          ${companyName ? `<p style="margin: 4px 0; font-size: 14px;"><strong>Company:</strong> ${companyName}</p>` : ''}
+          ${guests != null && guests !== '' ? `<p style="margin: 4px 0; font-size: 14px;"><strong>Guests:</strong> ${guests}</p>` : ''}
+          ${tileShopCustomerId ? `<p style="margin: 4px 0; font-size: 14px;"><strong>Tile Shop Customer ID:</strong> ${tileShopCustomerId}</p>` : ''}
+          ${specialRequirements ? `<p style="margin: 4px 0; font-size: 14px;"><strong>Special Requirements:</strong> ${specialRequirements}</p>` : ''}
         </div>
 
         <div style="background: #f0fdf4; border-radius: 8px; padding: 16px; margin: 20px 0;">

@@ -9,7 +9,16 @@ const EventDetailPage = () => {
   const [event, setEvent] = useState(null);
   const [signupCount, setSignupCount] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [signupForm, setSignupForm] = useState({ firstName: '', lastName: '', email: '', phone: '' });
+  const [signupForm, setSignupForm] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    companyName: '',
+    guests: '',
+    tileShopCustomerId: '',
+    specialRequirements: '',
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState('');
@@ -438,11 +447,24 @@ const EventDetailPage = () => {
                           lastName: signupForm.lastName,
                           email: signupForm.email,
                           phone: signupForm.phone,
+                          companyName: signupForm.companyName,
+                          guests: signupForm.guests ? parseInt(signupForm.guests, 10) : null,
+                          tileShopCustomerId: event.showTileShopId ? signupForm.tileShopCustomerId : '',
+                          specialRequirements: signupForm.specialRequirements,
                         };
                         await addSignup(signupData);
                         setSubmitSuccess(true);
                         setSignupCount((prev) => prev + 1);
-                        setSignupForm({ firstName: '', lastName: '', email: '', phone: '' });
+                        setSignupForm({
+                          firstName: '',
+                          lastName: '',
+                          email: '',
+                          phone: '',
+                          companyName: '',
+                          guests: '',
+                          tileShopCustomerId: '',
+                          specialRequirements: '',
+                        });
                         // Fire-and-forget notification email
                         if (event.notificationEmails) {
                           supabase.functions.invoke('send-signup-notification', {
@@ -517,7 +539,8 @@ const EventDetailPage = () => {
                     />
                     <input
                       type="tel"
-                      placeholder="Phone Number"
+                      placeholder="Phone Number *"
+                      required
                       value={signupForm.phone}
                       onChange={(e) => setSignupForm((prev) => ({ ...prev, phone: e.target.value }))}
                       style={{
@@ -529,6 +552,83 @@ const EventDetailPage = () => {
                         outline: 'none',
                         backgroundColor: 'white',
                         boxSizing: 'border-box',
+                      }}
+                      onFocus={(e) => (e.target.style.boxShadow = '0 0 0 2px #509E2E40')}
+                      onBlur={(e) => (e.target.style.boxShadow = 'none')}
+                    />
+                    <input
+                      type="text"
+                      placeholder="Company Name *"
+                      required
+                      value={signupForm.companyName}
+                      onChange={(e) => setSignupForm((prev) => ({ ...prev, companyName: e.target.value }))}
+                      style={{
+                        padding: '16px 14px',
+                        border: 'none',
+                        borderRadius: '6px',
+                        fontSize: '14px',
+                        fontFamily: brandTokens.font,
+                        outline: 'none',
+                        backgroundColor: 'white',
+                        boxSizing: 'border-box',
+                      }}
+                      onFocus={(e) => (e.target.style.boxShadow = '0 0 0 2px #509E2E40')}
+                      onBlur={(e) => (e.target.style.boxShadow = 'none')}
+                    />
+                    <input
+                      type="number"
+                      min="0"
+                      placeholder="Number of guests (optional)"
+                      value={signupForm.guests}
+                      onChange={(e) => setSignupForm((prev) => ({ ...prev, guests: e.target.value }))}
+                      style={{
+                        padding: '16px 14px',
+                        border: 'none',
+                        borderRadius: '6px',
+                        fontSize: '14px',
+                        fontFamily: brandTokens.font,
+                        outline: 'none',
+                        backgroundColor: 'white',
+                        boxSizing: 'border-box',
+                      }}
+                      onFocus={(e) => (e.target.style.boxShadow = '0 0 0 2px #509E2E40')}
+                      onBlur={(e) => (e.target.style.boxShadow = 'none')}
+                    />
+                    {event.showTileShopId && (
+                      <input
+                        type="text"
+                        placeholder="Tile Shop Customer ID (optional)"
+                        value={signupForm.tileShopCustomerId}
+                        onChange={(e) => setSignupForm((prev) => ({ ...prev, tileShopCustomerId: e.target.value }))}
+                        style={{
+                          padding: '16px 14px',
+                          border: 'none',
+                          borderRadius: '6px',
+                          fontSize: '14px',
+                          fontFamily: brandTokens.font,
+                          outline: 'none',
+                          backgroundColor: 'white',
+                          boxSizing: 'border-box',
+                        }}
+                        onFocus={(e) => (e.target.style.boxShadow = '0 0 0 2px #509E2E40')}
+                        onBlur={(e) => (e.target.style.boxShadow = 'none')}
+                      />
+                    )}
+                    <textarea
+                      placeholder="Special requirements (dietary, accessibility, etc.) — optional"
+                      value={signupForm.specialRequirements}
+                      onChange={(e) => setSignupForm((prev) => ({ ...prev, specialRequirements: e.target.value }))}
+                      rows={3}
+                      style={{
+                        padding: '16px 14px',
+                        border: 'none',
+                        borderRadius: '6px',
+                        fontSize: '14px',
+                        fontFamily: brandTokens.font,
+                        outline: 'none',
+                        backgroundColor: 'white',
+                        boxSizing: 'border-box',
+                        resize: 'vertical',
                       }}
                       onFocus={(e) => (e.target.style.boxShadow = '0 0 0 2px #509E2E40')}
                       onBlur={(e) => (e.target.style.boxShadow = 'none')}

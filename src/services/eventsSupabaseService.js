@@ -40,6 +40,7 @@ const transformEventFromDB = (row) => ({
   status: row.status,
   section: row.section || null,
   notificationEmails: row.notification_emails || null,
+  showTileShopId: row.show_tile_shop_id || false,
   createdAt: row.created_at,
   updatedAt: row.updated_at,
 });
@@ -58,6 +59,7 @@ const transformEventToDB = (data) => ({
   status: data.status || 'draft',
   section: data.section || null,
   notification_emails: data.notificationEmails || null,
+  show_tile_shop_id: data.showTileShopId || false,
 });
 
 const transformSignupFromDB = (row) => ({
@@ -67,6 +69,10 @@ const transformSignupFromDB = (row) => ({
   lastName: row.last_name,
   email: row.email,
   phone: row.phone,
+  companyName: row.company_name || '',
+  guests: row.guests,
+  tileShopCustomerId: row.tile_shop_customer_id || '',
+  specialRequirements: row.special_requirements || '',
   signedUpAt: row.signed_up_at,
 });
 
@@ -76,6 +82,10 @@ const transformSignupToDB = (data) => ({
   last_name: data.lastName,
   email: data.email,
   phone: data.phone || null,
+  company_name: data.companyName || null,
+  guests: data.guests ?? null,
+  tile_shop_customer_id: data.tileShopCustomerId || null,
+  special_requirements: data.specialRequirements || null,
 });
 
 // ============================================================

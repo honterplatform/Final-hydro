@@ -24,6 +24,10 @@ const EventSignupForm = ({ event, visible, onClose, onSignupSuccess }) => {
     lastName: '',
     email: '',
     phone: '',
+    companyName: '',
+    guests: '',
+    tileShopCustomerId: '',
+    specialRequirements: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
@@ -41,6 +45,10 @@ const EventSignupForm = ({ event, visible, onClose, onSignupSuccess }) => {
         lastName: formData.lastName,
         email: formData.email,
         phone: formData.phone,
+        companyName: formData.companyName,
+        guests: formData.guests ? parseInt(formData.guests, 10) : null,
+        tileShopCustomerId: event.showTileShopId ? formData.tileShopCustomerId : '',
+        specialRequirements: formData.specialRequirements,
       });
 
       setSubmitSuccess(true);
@@ -49,7 +57,16 @@ const EventSignupForm = ({ event, visible, onClose, onSignupSuccess }) => {
       setTimeout(() => {
         onClose();
         setSubmitSuccess(false);
-        setFormData({ firstName: '', lastName: '', email: '', phone: '' });
+        setFormData({
+          firstName: '',
+          lastName: '',
+          email: '',
+          phone: '',
+          companyName: '',
+          guests: '',
+          tileShopCustomerId: '',
+          specialRequirements: '',
+        });
         setIsSubmitting(false);
       }, 2000);
     } catch (error) {
@@ -195,10 +212,55 @@ const EventSignupForm = ({ event, visible, onClose, onSignupSuccess }) => {
 
               <input
                 type="tel"
-                placeholder="Phone Number"
+                placeholder="Phone Number *"
+                required
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                 style={inputStyle}
+                onFocus={(e) => (e.target.style.borderBottomColor = '#509E2E')}
+                onBlur={(e) => (e.target.style.borderBottomColor = '#e5e7eb')}
+              />
+
+              <input
+                type="text"
+                placeholder="Company Name *"
+                required
+                value={formData.companyName}
+                onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+                style={inputStyle}
+                onFocus={(e) => (e.target.style.borderBottomColor = '#509E2E')}
+                onBlur={(e) => (e.target.style.borderBottomColor = '#e5e7eb')}
+              />
+
+              <input
+                type="number"
+                min="0"
+                placeholder="Number of guests (optional)"
+                value={formData.guests}
+                onChange={(e) => setFormData({ ...formData, guests: e.target.value })}
+                style={inputStyle}
+                onFocus={(e) => (e.target.style.borderBottomColor = '#509E2E')}
+                onBlur={(e) => (e.target.style.borderBottomColor = '#e5e7eb')}
+              />
+
+              {event.showTileShopId && (
+                <input
+                  type="text"
+                  placeholder="Tile Shop Customer ID (optional)"
+                  value={formData.tileShopCustomerId}
+                  onChange={(e) => setFormData({ ...formData, tileShopCustomerId: e.target.value })}
+                  style={inputStyle}
+                  onFocus={(e) => (e.target.style.borderBottomColor = '#509E2E')}
+                  onBlur={(e) => (e.target.style.borderBottomColor = '#e5e7eb')}
+                />
+              )}
+
+              <textarea
+                placeholder="Special requirements (dietary, accessibility, etc.) — optional"
+                value={formData.specialRequirements}
+                onChange={(e) => setFormData({ ...formData, specialRequirements: e.target.value })}
+                rows={3}
+                style={{ ...inputStyle, resize: 'vertical', padding: '10px 0' }}
                 onFocus={(e) => (e.target.style.borderBottomColor = '#509E2E')}
                 onBlur={(e) => (e.target.style.borderBottomColor = '#e5e7eb')}
               />
