@@ -26,11 +26,14 @@ const EventCard = ({ event, signupCount = 0, onClick }) => {
     year: 'numeric',
   });
 
+  const formatTime = (t) => new Date(`2000-01-01T${t}`).toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+  });
   const timeStr = event.eventTime
-    ? new Date(`2000-01-01T${event.eventTime}`).toLocaleTimeString('en-US', {
-        hour: 'numeric',
-        minute: '2-digit',
-      })
+    ? event.eventEndTime
+      ? `${formatTime(event.eventTime)} – ${formatTime(event.eventEndTime)}`
+      : formatTime(event.eventTime)
     : null;
 
   const catColor = categoryColors[event.category] || categoryColors.general;

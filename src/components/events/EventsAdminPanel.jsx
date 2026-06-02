@@ -24,6 +24,7 @@ const emptyForm = {
   coverImage: '',
   eventDate: '',
   eventTime: '',
+  eventEndTime: '',
   location: '',
   category: 'general',
   section: '',
@@ -143,6 +144,7 @@ const EventsAdminPanel = () => {
         coverImage: formData.coverImage || null,
         eventDate: formData.eventDate,
         eventTime: formData.eventTime || null,
+        eventEndTime: formData.eventEndTime || null,
         location: formData.location.trim() || null,
         category: formData.category,
         section: formData.section || null,
@@ -176,6 +178,7 @@ const EventsAdminPanel = () => {
       coverImage: ev.coverImage || '',
       eventDate: ev.eventDate || '',
       eventTime: ev.eventTime || '',
+      eventEndTime: ev.eventEndTime || '',
       location: ev.location || '',
       category: ev.category || 'general',
       section: ev.section || '',
@@ -347,15 +350,19 @@ const EventsAdminPanel = () => {
               <input id="eventImageUpload" type="file" accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} />
             </div>
 
-            {/* Date + Time */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px' }}>
+            {/* Date + Start/End Time */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', marginBottom: '16px' }}>
               <div>
                 <label style={labelStyle}>Date *</label>
                 <input type="date" value={formData.eventDate} onChange={(e) => handleInputChange('eventDate', e.target.value)} style={fieldInputStyle} />
               </div>
               <div>
-                <label style={labelStyle}>Time</label>
+                <label style={labelStyle}>Start Time</label>
                 <input type="time" value={formData.eventTime} onChange={(e) => handleInputChange('eventTime', e.target.value)} style={fieldInputStyle} />
+              </div>
+              <div>
+                <label style={labelStyle}>End Time</label>
+                <input type="time" value={formData.eventEndTime} onChange={(e) => handleInputChange('eventEndTime', e.target.value)} style={fieldInputStyle} />
               </div>
             </div>
 
@@ -450,6 +457,7 @@ const EventsAdminPanel = () => {
                     <p style={{ margin: '2px 0 0 0', fontSize: '12px', color: '#6b7280' }}>
                       {new Date(ev.eventDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                       {ev.eventTime && ` at ${new Date('2000-01-01T' + ev.eventTime).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`}
+                      {ev.eventEndTime && ` – ${new Date('2000-01-01T' + ev.eventEndTime).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`}
                       {' · '}{ev.category.replace('-', ' ')}
                       {ev.section && ` · ${ev.section}`}
                       {' · '}{signupCounts[ev.id] || 0} signups

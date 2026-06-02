@@ -40,7 +40,7 @@ serve(async (req) => {
 
     const { data: event, error: eventError } = await supabase
       .from('events')
-      .select('title, event_date, event_time, location, notification_emails')
+      .select('title, event_date, event_time, event_end_time, location, notification_emails')
       .eq('id', eventId)
       .single();
 
@@ -79,11 +79,14 @@ serve(async (req) => {
       day: 'numeric',
       year: 'numeric',
     });
+    const formatTime = (t: string) => new Date(`2000-01-01T${t}`).toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+    });
     const timeStr = event.event_time
-      ? new Date(`2000-01-01T${event.event_time}`).toLocaleTimeString('en-US', {
-          hour: 'numeric',
-          minute: '2-digit',
-        })
+      ? event.event_end_time
+        ? `${formatTime(event.event_time)} – ${formatTime(event.event_end_time)}`
+        : formatTime(event.event_time)
       : null;
 
     // Build email HTML

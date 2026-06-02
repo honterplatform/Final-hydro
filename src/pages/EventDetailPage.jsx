@@ -83,11 +83,14 @@ const EventDetailPage = () => {
     year: 'numeric',
   });
 
+  const formatTime = (t) => new Date(`2000-01-01T${t}`).toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+  });
   const timeStr = event.eventTime
-    ? new Date(`2000-01-01T${event.eventTime}`).toLocaleTimeString('en-US', {
-        hour: 'numeric',
-        minute: '2-digit',
-      })
+    ? event.eventEndTime
+      ? `${formatTime(event.eventTime)} – ${formatTime(event.eventEndTime)}`
+      : formatTime(event.eventTime)
     : null;
 
   const todayStr = (() => {
@@ -121,9 +124,11 @@ const EventDetailPage = () => {
 
   const getGoogleCalendarUrl = () => {
     const start = formatDateForCal(event.eventDate, event.eventTime);
-    // Default 1 hour duration if time provided, otherwise all-day
+    // Use end time if set, otherwise default to 1 hour after start, otherwise all-day
     let end;
-    if (event.eventTime) {
+    if (event.eventTime && event.eventEndTime) {
+      end = formatDateForCal(event.eventDate, event.eventEndTime);
+    } else if (event.eventTime) {
       const [h, m] = event.eventTime.split(':').map(Number);
       const endH = String(h + 1).padStart(2, '0');
       const endM = String(m).padStart(2, '0');
@@ -146,7 +151,9 @@ const EventDetailPage = () => {
   const downloadIcs = () => {
     const start = formatDateForCal(event.eventDate, event.eventTime);
     let end;
-    if (event.eventTime) {
+    if (event.eventTime && event.eventEndTime) {
+      end = formatDateForCal(event.eventDate, event.eventEndTime);
+    } else if (event.eventTime) {
       const [h, m] = event.eventTime.split(':').map(Number);
       const endH = String(h + 1).padStart(2, '0');
       const endM = String(m).padStart(2, '0');
