@@ -60,8 +60,9 @@ const EventsListPage = ({ section }) => {
     return events.filter((event) => {
       // Filter by section if provided
       if (section && event.section !== section) return false;
-      // Hide past events unless toggled on
-      if (!filters.showPast && event.eventDate < todayStr) return false;
+      // Past toggle off → only upcoming. Past toggle on → only past.
+      const eventIsPast = event.eventDate < todayStr;
+      if (filters.showPast ? !eventIsPast : eventIsPast) return false;
       if (selectedDate && event.eventDate !== selectedDate) return false;
       if (filters.category && event.category !== filters.category) return false;
       if (filters.search) {
@@ -115,7 +116,7 @@ const EventsListPage = ({ section }) => {
             fontWeight: '400',
             color: brandTokens.colors.text,
           }}>
-            {filters.showPast ? 'All Events' : 'Upcoming Events'}{section ? ` — ${section.charAt(0).toUpperCase() + section.slice(1)}` : ''}
+            {filters.showPast ? 'Past Events' : 'Upcoming Events'}{section ? ` — ${section.charAt(0).toUpperCase() + section.slice(1)}` : ''}
           </h1>
           <div style={{
             display: 'flex',
